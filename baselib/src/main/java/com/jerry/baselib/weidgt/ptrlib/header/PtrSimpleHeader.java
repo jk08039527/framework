@@ -45,7 +45,7 @@ public class PtrSimpleHeader extends LinearLayout implements PtrUIHandler {
     }
 
     void inflateView(final Context context) {
-        View.inflate(context, R.layout.pull_to_refresh_header_vertical, this);
+        View.inflate(context, R.layout.ptr_header_vertical, this);
     }
 
     void setStageText(final Context context) {

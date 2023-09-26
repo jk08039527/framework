@@ -51,5 +51,6 @@
         <attr name="pstsShouldExpand" format="boolean" />
         <attr name="pstsUnderlineExpand" format="boolean" />
         <attr name="pstsTextAllCaps" format="boolean" />
+        <attr name="pstsTextSize" format="dimension" />
     </declare-styleable>
 </resources>
