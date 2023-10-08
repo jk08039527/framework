@@ -46,30 +46,6 @@ public class WebViewActivity extends BaseActivity {
     private WebView mWebView;
     private boolean mGetProduct = true;
     private final List<String> mUrls = new ArrayList<>();
-    private BaseListenerService mService;
-    private boolean fromService;
-    private final ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MyBinder binder = (MyBinder) service;
-            mService = binder.getService();
-            ArrayList<String> urls = mService.getTaskUrl();
-            if (!CollectionUtils.isEmpty(urls)) {
-                mUrls.addAll(urls);
-                if (mUrls.size() > 0) {
-                    mWebView.loadUrl(mUrls.remove(0));
-                }
-            } else {
-                toast("暂无可解析的url");
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "onServiceDisconnected");
-            mService = null;
-        }
-    };
     private final WeakHandler mWeakHandler = new WeakHandler(new Callback() {
         @Override
         public boolean handleMessage(@NonNull final Message msg) {
@@ -85,7 +61,6 @@ public class WebViewActivity extends BaseActivity {
     @Override
     protected void beforeViews() {
         Intent intent = getIntent();
-        fromService = intent.getBooleanExtra(Key.FROM_SERVICE, false);
         mGetProduct = intent.getBooleanExtra(Key.TYPE, true);
         String url = intent.getStringExtra(Key.DATA);
         if (url != null) {
@@ -159,10 +134,6 @@ public class WebViewActivity extends BaseActivity {
                 toast("webLoad:" + url);
                 mWebView.loadUrl(url);
             }
-            if (fromService) {
-                Intent intent = new Intent("com.jerry.taskService");
-                bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
-            }
         } catch (Exception e) {
             LogUtils.e("something error");
         }
@@ -192,14 +163,6 @@ public class WebViewActivity extends BaseActivity {
             mWebView.goBack();
         } else {
             super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (fromService) {
-            unbindService(mServiceConnection);
         }
     }
 }
