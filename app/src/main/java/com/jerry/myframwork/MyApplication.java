@@ -2,6 +2,7 @@ package com.jerry.myframwork;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Intent;
 
 import com.jerry.baselib.App;
 
@@ -23,5 +24,6 @@ public class MyApplication extends Application {
         super.onCreate();
         mInstance = this;
         App.init(this);
+        startService(new Intent(this, ListenerService.class));
     }
 }

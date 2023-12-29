@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">myFramwork</string>
+    <string name="accessibility_service_description">运行辅助</string>
 </resources>

@@ -65,7 +65,7 @@ public class FloatWindowManager {
                     if (service.isPlaying) {
                         service.stop();
                     } else {
-                        Intent intent = new Intent("");
+                        Intent intent = new Intent("android.accessibilityservice.AccessibilityService");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         service.startActivity(intent);
                     }

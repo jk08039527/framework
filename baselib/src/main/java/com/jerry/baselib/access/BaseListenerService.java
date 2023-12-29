@@ -10,8 +10,6 @@ import java.util.Set;
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.app.Service;
-import android.app.UiAutomation;
-import android.app.UiAutomation.OnAccessibilityEventListener;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.SoundPool;
@@ -20,6 +18,8 @@ import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.os.Vibrator;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -49,6 +49,7 @@ import com.jerry.baselib.R;
  */
 public abstract class BaseListenerService extends AccessibilityService implements OnItemClickListener<String> {
 
+    private static final String TAG = "BaseListenerService";
     protected static BaseListenerService instance;
     private final List<OnAccessibilityEventListener> mOnAccessibilityEventListeners = new ArrayList<>();
     protected GlobalActionAutomator mGlobalActionAutomator;
@@ -204,6 +205,32 @@ public abstract class BaseListenerService extends AccessibilityService implement
     @Override
     public void onInterrupt() {
         ToastUtil.showShortText("我快被终结了啊-----");
+    }
+
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        FloatWindowManager.getInstance().show();
+    }
+
+    @Override
+    protected boolean onKeyEvent(KeyEvent event) {
+        Log.i(TAG, "onKeyEvent");
+        if (isPlaying) {
+            int key = event.getKeyCode();
+            switch (key) {
+                case KeyEvent.KEYCODE_VOLUME_DOWN:
+                    LogUtils.i("KEYCODE_VOLUME_DOWN");
+                    stop();
+                    return true;
+                case KeyEvent.KEYCODE_VOLUME_UP:
+                    LogUtils.i("KEYCODE_VOLUME_UP");
+                    return true;
+                default:
+                    break;
+            }
+        }
+        return super.onKeyEvent(event);
     }
 
     public void selectPicker(String id, String text, int x, int enter, EndCallback endCallback) {
