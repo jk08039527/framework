@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 33
@@ -24,11 +23,6 @@ android {
         // 禁止lint检测，防止lintVital[FLAVOR]Release错误
         checkReleaseBuilds false
         abortOnError false
-    }
-    greendao {
-        schemaVersion 1//指定数据库版本号，更新操作会用到;
-        daoPackage 'com.jerry.baselib.greendao'//自动生成的dao的包名，包名默认是entity所在的包；
-        targetGenDir 'src/main/java'//生成数据库文件的目录
     }
 }
 

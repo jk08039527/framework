@@ -1,4 +1,4 @@
-package com.jerry.baselib.greendao;
+package com.jerry.myframwork.greendao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,12 +21,12 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        TestBeanDao.createTable(db, ifNotExists);
+        MyCurrencyPairDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        TestBeanDao.dropTable(db, ifExists);
+        MyCurrencyPairDao.dropTable(db, ifExists);
     }
 
     /**
@@ -45,7 +45,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(TestBeanDao.class);
+        registerDaoClass(MyCurrencyPairDao.class);
     }
 
     public DaoSession newSession() {

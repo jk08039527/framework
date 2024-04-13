@@ -8,12 +8,6 @@
 
     <View style="@style/horizontal_line_style" />
 
-    <ViewStub
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <View style="@style/horizontal_line_style" />
-
     <com.jerry.baselib.weidgt.ptrlib.widget.PtrRecyclerView
         android:id="@+id/ptrRecyclerView"
         android:layout_width="match_parent"
