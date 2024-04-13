@@ -14,7 +14,7 @@
 
     <View style="@style/horizontal_line_style" />
 
-    <com.jerry.baselib.common.ptrlib.widget.PtrRecyclerView
+    <com.jerry.baselib.weidgt.ptrlib.widget.PtrRecyclerView
         android:id="@+id/ptrRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

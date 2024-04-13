@@ -1,27 +1,67 @@
 package com.jerry.myframwork;
 
-import android.os.Bundle;
+import java.util.List;
+
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.jerry.baselib.asyctask.AppTask;
+import com.jerry.baselib.asyctask.BackgroundTask;
+import com.jerry.baselib.asyctask.WhenTaskDone;
+import com.jerry.baselib.base.BaseRecyclerActivity;
+import com.jerry.baselib.base.BaseRecyclerAdapter;
+import com.jerry.baselib.base.RecyclerViewHolder;
+import com.jerry.baselib.util.DateUtils;
+import com.jerry.baselib.util.LogUtils;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener {
+import io.gate.gateapi.ApiException;
+import io.gate.gateapi.api.SpotApi;
+import io.gate.gateapi.models.CurrencyPair;
+
+public class MainActivity extends BaseRecyclerActivity<CurrencyPair> {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        findViewById(R.id.tv_start).setOnClickListener(this);
-        findViewById(R.id.tv_stop).setOnClickListener(this);
+    protected BaseRecyclerAdapter<CurrencyPair> initAdapter() {
+        return new BaseRecyclerAdapter<CurrencyPair>(this, mData) {
+            @Override
+            public int getItemLayoutId(final int viewType) {
+                return R.layout.item_text;
+            }
+
+            @Override
+            public void convert(final RecyclerViewHolder holder, final int position, final int viewType, final CurrencyPair bean) {
+                TextView tvTitle = holder.getView(R.id.tv_title);
+                TextView tvContent = holder.getView(R.id.tv_content);
+                tvTitle.setText(bean.getId());
+                tvContent.setText(DateUtils.getDateWTimesByLong(bean.getBuyStart() * 1000L));
+            }
+        };
+    }
+
+    @Override
+    protected void getData() {
+        AppTask.with(this).assign((BackgroundTask<List<CurrencyPair>>) () -> {
+            try {
+                SpotApi spotApi = new SpotApi();
+                return spotApi.listCurrencyPairs();
+            } catch (ApiException e) {
+                LogUtils.e(e.getResponseBody());
+            }
+            return null;
+        }).whenDone((WhenTaskDone<List<CurrencyPair>>) result -> {
+            mData.clear();
+            mData.addAll(result);
+            onAfterRefresh();
+        }).execute();
     }
 
     @Override
     public void onClick(final View v) {
-        if (v.getId() == R.id.tv_start) {
-            // 开始
-        } else if (v.getId() == R.id.tv_stop) {
-            // 结束
-        }
+
+    }
+
+    @Override
+    public void onItemClick(final View itemView, final int position) {
+
     }
 }

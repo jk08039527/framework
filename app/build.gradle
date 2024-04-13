@@ -24,4 +24,5 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':baselib')
+    implementation 'io.gate:gate-api:6.57.0'
 }
