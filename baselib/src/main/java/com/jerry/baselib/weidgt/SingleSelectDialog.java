@@ -67,7 +67,7 @@ public class SingleSelectDialog extends BaseDialog {
                 }
                 TextView tvTitle = holder.getView(R.id.tv_title);
                 tvTitle.setText(bean.title);
-                TextView tvContent = holder.getView(R.id.tv_content);
+                TextView tvContent = holder.getView(R.id.tv_start_time);
                 tvContent.setText(bean.content);
             }
         };

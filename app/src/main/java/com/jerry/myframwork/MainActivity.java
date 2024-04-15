@@ -1,9 +1,7 @@
 package com.jerry.myframwork;
 
-import java.util.Comparator;
 import java.util.List;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,11 +19,13 @@ import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.ParseUtil;
 import com.jerry.myframwork.bean.MyCurrencyPair;
 import com.jerry.myframwork.dbhelper.MyDbManager;
+import com.jerry.myframwork.greendao.MyCurrencyPairDao.Properties;
 
 import io.gate.gateapi.ApiException;
 import io.gate.gateapi.api.SpotApi;
-import io.gate.gateapi.api.SpotApi.APIlistCandlesticksRequest;
+import io.gate.gateapi.api.SpotApi.APIlistTradesRequest;
 import io.gate.gateapi.models.CurrencyPair;
+import io.gate.gateapi.models.Trade;
 
 public class MainActivity extends BaseRecyclerActivity<MyCurrencyPair> {
 
@@ -39,15 +39,17 @@ public class MainActivity extends BaseRecyclerActivity<MyCurrencyPair> {
         return new BaseRecyclerAdapter<MyCurrencyPair>(this, mData) {
             @Override
             public int getItemLayoutId(final int viewType) {
-                return R.layout.item_text;
+                return R.layout.item_coin;
             }
 
             @Override
             public void convert(final RecyclerViewHolder holder, final int position, final int viewType, final MyCurrencyPair bean) {
                 TextView tvTitle = holder.getView(R.id.tv_title);
-                TextView tvContent = holder.getView(R.id.tv_content);
+                TextView tvStartTime = holder.getView(R.id.tv_start_time);
+                TextView tvPrice1m = holder.getView(R.id.tv_price_1m);
                 tvTitle.setText(bean.getId());
-                tvContent.setText(DateUtils.getDateWTimesByLong(bean.getBuyStart() * 1000L));
+                tvStartTime.setText(DateUtils.getDateWTimesByLong(bean.getBuyStart() * 1000L));
+                tvPrice1m.setText(String.valueOf(bean.getNewPrice()));
             }
         };
     }
@@ -56,9 +58,13 @@ public class MainActivity extends BaseRecyclerActivity<MyCurrencyPair> {
     protected void getData() {
         AppTask.with(this).assign((BackgroundTask<List<MyCurrencyPair>>) () -> {
             try {
-                SpotApi spotApi = new SpotApi();
-                List<CurrencyPair> list = spotApi.listCurrencyPairs();
-                List<MyCurrencyPair> myCurrencyPairs = JSON.parseArray(JSON.toJSONString(list), MyCurrencyPair.class);
+                List<MyCurrencyPair> myCurrencyPairs = MyDbManager.getInstance().queryAll(MyCurrencyPair.class, null);
+                if (myCurrencyPairs.size() < 1000) {
+                    SpotApi spotApi = new SpotApi();
+                    List<CurrencyPair> list = spotApi.listCurrencyPairs();
+                    myCurrencyPairs = JSON.parseArray(JSON.toJSONString(list), MyCurrencyPair.class);
+                    MyDbManager.getInstance().insertOrReplaceObjects(myCurrencyPairs);
+                }
                 myCurrencyPairs.sort((o1, o2) -> Long.compare(o2.getBuyStart(), o1.getBuyStart()));
                 return myCurrencyPairs;
             } catch (ApiException e) {
@@ -70,8 +76,7 @@ public class MainActivity extends BaseRecyclerActivity<MyCurrencyPair> {
             if (!CollectionUtils.isEmpty(result)) {
                 mData.addAll(result);
             }
-            onAfterRefresh();
-        }).execute();
+        }).whenTaskEnd(this::onAfterRefresh).execute();
     }
 
     @Override
@@ -85,19 +90,17 @@ public class MainActivity extends BaseRecyclerActivity<MyCurrencyPair> {
         AppTask.with(this).assign((BackgroundTask<List<MyCurrencyPair>>) () -> {
             try {
                 SpotApi spotApi = new SpotApi();
-                APIlistCandlesticksRequest request = spotApi.listCandlesticks(currencyPair.getId())
+                APIlistTradesRequest request = spotApi.listTrades(currencyPair.getId())
                     .from(currencyPair.getBuyStart())
-                    .limit(360).interval("10s");
-                List<List<String>> results = request.execute();
-                if (results.size() > 10) {
-                    List<String> info10s = results.get(0);
-                    List<String> info30s = results.get(2);
-                    List<String> info1m = results.get(5);
-                    currencyPair.new10s = ParseUtil.parse2Double(info10s.get(2));
-                    currencyPair.new30s = ParseUtil.parse2Double(info30s.get(2));
-                    currencyPair.new1m = ParseUtil.parse2Double(info1m.get(2));
-                    MyDbManager.getInstance().insertOrReplaceObject(currencyPair);
+                    .to(currencyPair.getBuyStart() + 5)
+                    .limit(1000);
+                currencyPair.newPrice = 0;
+                List<Trade> results = request.execute();
+                for (Trade result : results) {
+                    currencyPair.newPrice += ParseUtil.parse2Double(result.getPrice());
                 }
+                currencyPair.newPrice = currencyPair.newPrice / results.size();
+                MyDbManager.getInstance().insertOrReplaceObject(currencyPair);
             } catch (ApiException e) {
                 LogUtils.e(e.getResponseBody());
             }
