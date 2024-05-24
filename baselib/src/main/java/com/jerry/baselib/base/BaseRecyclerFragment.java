@@ -6,8 +6,6 @@ import java.util.List;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
@@ -61,25 +59,9 @@ public abstract class BaseRecyclerFragment<T> extends BaseFragment implements Ba
     }
 
     @Override
-    public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (getUserVisibleHint()) {
-            lazyLoad();
-        }
-    }
-
-    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isCreateView) {
-            lazyLoad();
-        }
-    }
-
-    @Override
-    public void onHiddenChanged(final boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden && isCreateView) {
             lazyLoad();
         }
     }

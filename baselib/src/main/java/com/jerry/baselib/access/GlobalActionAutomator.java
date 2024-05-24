@@ -118,7 +118,6 @@ public class GlobalActionAutomator {
         return isDispatched;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void gesturesAsync(GestureDescription.StrokeDescription... strokes) {
         if (mService == null) {
             return;
@@ -136,22 +135,18 @@ public class GlobalActionAutomator {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean click(int x, int y) {
         return press(x, y, ViewConfiguration.getTapTimeout() + 50);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean press(int x, int y, int delay) {
         return gesture(0, delay, new int[]{x, y});
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean longClick(int x, int y) {
         return gesture(0, ViewConfiguration.getLongPressTimeout() + 200, new int[]{x, y});
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public boolean swipe(int x1, int y1, int x2, int y2, int delay) {
         return gesture(0, delay, new int[]{x1, y1}, new int[]{x2, y2});
     }

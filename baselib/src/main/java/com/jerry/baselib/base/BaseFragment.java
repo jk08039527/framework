@@ -24,7 +24,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     protected BaseActivity mActivity;
     protected boolean isCreateView;
-    protected boolean isInViewpager;
 
     protected abstract int getContentViewResourceId();
 
@@ -47,7 +46,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     public void onViewCreated(@NonNull final View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         isCreateView = true;
-        if (!isInViewpager || getUserVisibleHint()) {
+        if (getUserVisibleHint()) {
             reload();
         }
     }

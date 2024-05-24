@@ -11,7 +11,7 @@ import com.jerry.baselib.R;
  * @copyright www.axiang.com
  * @description
  */
-public abstract class BaseActivityWithFragment extends BaseActivity {
+public abstract class BaseActivityWithFragment<T extends BaseFragment> extends BaseActivity {
 
     @Override
     protected int getContentViewResourceId() {
@@ -21,11 +21,14 @@ public abstract class BaseActivityWithFragment extends BaseActivity {
     @Override
     protected void initView() {
         FragmentManager fm = getSupportFragmentManager();
-        BaseFragment fg = fragmentNewInstance();
+        T fg = fragmentNewInstance();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.fl_fragment, fg, fg.getClass().getSimpleName());
         ft.commitAllowingStateLoss();
     }
 
-    public abstract BaseFragment fragmentNewInstance();
+    /**
+     * 初始化BaseFragment
+     */
+    public abstract T fragmentNewInstance();
 }

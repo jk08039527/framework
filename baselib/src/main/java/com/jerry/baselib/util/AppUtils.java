@@ -8,14 +8,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.Context;
 import android.content.pm.PackageInfo;
+import android.media.SoundPool;
+import android.os.Vibrator;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.ViewConfiguration;
 
 import com.jerry.baselib.App;
 import com.jerry.baselib.Key;
+import com.jerry.baselib.R;
 
 /**
  * 常用方法的工具类
@@ -152,5 +156,19 @@ public class AppUtils {
             e.printStackTrace();
             return -1;
         }
+    }
+
+    /**
+     * 震动发声提示
+     */
+    public static void giveNotice(Context context) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Service.VIBRATOR_SERVICE);
+        if (vibrator != null) {
+            vibrator.vibrate(new long[]{500, 1000, 500, 1000}, -1);
+        }
+        SoundPool mSoundPool;
+        mSoundPool = new SoundPool.Builder().setMaxStreams(10).build();
+        int mWinMusic = mSoundPool.load(context, R.raw.fadein, 1);
+        mSoundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> soundPool.play(mWinMusic, 0.6F, 0.6F, 0, 0, 1.0F));
     }
 }

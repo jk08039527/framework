@@ -1,5 +1,6 @@
 package com.jerry.baselib.weidgt.ptrlib;
 
+import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
 import com.jerry.baselib.weidgt.ptrlib.indicator.PtrIndicator;
 
 /**

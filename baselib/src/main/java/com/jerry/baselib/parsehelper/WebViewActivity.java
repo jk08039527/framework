@@ -3,14 +3,10 @@ package com.jerry.baselib.parsehelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler.Callback;
-import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
@@ -20,9 +16,10 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 
+import org.greenrobot.eventbus.EventBus;
+
 import com.jerry.baselib.Key;
 import com.jerry.baselib.access.BaseListenerService;
-import com.jerry.baselib.access.BaseListenerService.MyBinder;
 import com.jerry.baselib.base.BaseActivity;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.LogUtils;
@@ -37,21 +34,19 @@ import com.jerry.baselib.R;
 public class WebViewActivity extends BaseActivity {
 
     private static final String TAG = "WebViewActivity";
-
-    private static final int TYPE_PDD = 1;
-    private static final int TYPE_TAOBAO = 2;
-    private static final int TYPE_JINGDONG = 3;
-    private static final int TYPE_ZHUAN = 4;
-    private final List<String> mProductIds = new ArrayList<>();
     private WebView mWebView;
     private boolean mGetProduct = true;
     private final List<String> mUrls = new ArrayList<>();
+    private boolean fromService;
     private final WeakHandler mWeakHandler = new WeakHandler(new Callback() {
         @Override
         public boolean handleMessage(@NonNull final Message msg) {
             if (msg.what == WebViewUtil.MSG_PRODUCT) {
-                String html = (String) msg.obj;
-                String url = mWebView.getUrl();
+                Bundle bundle = new Bundle();
+                bundle.putString("url", mWebView.getUrl());
+                bundle.putString("html", String.valueOf(msg.obj));
+                EventBus.getDefault().post(bundle);
+                setResult(RESULT_OK);
                 return true;
             }
             return false;
@@ -61,6 +56,7 @@ public class WebViewActivity extends BaseActivity {
     @Override
     protected void beforeViews() {
         Intent intent = getIntent();
+        fromService = intent.getBooleanExtra(Key.FROM_SERVICE, false);
         mGetProduct = intent.getBooleanExtra(Key.TYPE, true);
         String url = intent.getStringExtra(Key.DATA);
         if (url != null) {
@@ -129,10 +125,21 @@ public class WebViewActivity extends BaseActivity {
                     }
                 }
             });
-            if (mUrls.size() > 0) {
+            if (!mUrls.isEmpty()) {
                 String url = mUrls.remove(0);
                 toast("webLoad:" + url);
                 mWebView.loadUrl(url);
+            }
+            if (fromService) {
+                ArrayList<String> urls = BaseListenerService.getInstance().getTaskUrl();
+                if (!CollectionUtils.isEmpty(urls)) {
+                    mUrls.addAll(urls);
+                    if (!mUrls.isEmpty()) {
+                        mWebView.loadUrl(mUrls.remove(0));
+                    }
+                } else {
+                    toast("暂无可解析的url");
+                }
             }
         } catch (Exception e) {
             LogUtils.e("something error");
@@ -142,19 +149,6 @@ public class WebViewActivity extends BaseActivity {
     @Override
     public void onClick(final View v) {
 
-    }
-
-    private int getUrlType(String url) {
-        if (url.contains("yangkeduo") || url.contains("pinduoduo")) {
-            return TYPE_PDD;
-        }
-        if (url.contains("jd.com")) {
-            return TYPE_JINGDONG;
-        }
-        if (url.contains("zz3.cn") || url.contains("zhuanzhuan")) {
-            return TYPE_ZHUAN;
-        }
-        return TYPE_TAOBAO;
     }
 
     @Override

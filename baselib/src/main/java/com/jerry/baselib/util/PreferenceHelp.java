@@ -81,4 +81,12 @@ public class PreferenceHelp {
     public static void remove(String strKey){
         sp.edit().remove(strKey).apply();
     }
+
+    public static boolean isFirstDo(final String firstKey) {
+        return sp.getBoolean("first_" + firstKey, true);
+    }
+
+    public static void setNotFirstDo(final String firstKey) {
+        sp.edit().putBoolean("first_" + firstKey, false).apply();
+    }
 }

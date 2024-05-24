@@ -11,6 +11,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.ToastUtil;
 import com.jerry.baselib.weidgt.RefreshDialog;
 import com.jerry.baselib.R;
@@ -85,6 +86,18 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
         if (tvRight != null) {
             tvRight.setText(text);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogUtils.i("onResume: " + getClass().getSimpleName());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtils.i("onPause: " + getClass().getSimpleName());
     }
 
     /**

@@ -4,11 +4,10 @@ package com.jerry.baselib.access;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.impl.OnDataCallback;
-import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.MathUtil;
 import com.jerry.baselib.util.WeakHandler;
+import com.jerry.baselib.impl.EndCallback;
 
 /**
  * @author Jerry
@@ -22,7 +21,7 @@ public abstract class BaseTask {
     protected final BaseListenerService mService;
     protected final WeakHandler mWeakHandler;
     protected boolean isPlaying;
-    protected final List<OnDataCallback<?>> mOnDataCallbacks = new ArrayList<>();
+    protected List<OnDataCallback<?>> mOnDataCallbacks;
 
     public BaseTask(final BaseListenerService listenerService, final WeakHandler weakHandler) {
         mService = listenerService;
@@ -37,18 +36,6 @@ public abstract class BaseTask {
     public abstract ArrayList<String> getTaskUrl();
 
     public abstract void handleHtml(final String url, final String html);
-
-    public boolean registerDataCallBack(final OnDataCallback<?> onDataCallback) {
-        if (mOnDataCallbacks.contains(onDataCallback)) {
-            LogUtils.w("onDataCallback already registered");
-            return false;
-        }
-        return mOnDataCallbacks.add(onDataCallback);
-    }
-
-    public boolean unregisterDataCallBack(final OnDataCallback<?> onDataCallback) {
-        return mOnDataCallbacks.remove(onDataCallback);
-    }
 
     public void setIsPlaying(final boolean isPlaying) {
         this.isPlaying = isPlaying;
@@ -66,5 +53,9 @@ public abstract class BaseTask {
 
     protected long getLongTime() {
         return MathUtil.random(10000, 20000);
+    }
+
+    public void setOnDataCallbacks(final List<OnDataCallback<?>> onDataCallbacks) {
+        mOnDataCallbacks = onDataCallbacks;
     }
 }

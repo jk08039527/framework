@@ -55,7 +55,7 @@ public class EditDialog extends BaseDialog {
     public void setText(String text) {
         this.text = text;
         if (mEditText != null) {
-            mEditText.setHint(text);
+            mEditText.setText(text);
         }
     }
 

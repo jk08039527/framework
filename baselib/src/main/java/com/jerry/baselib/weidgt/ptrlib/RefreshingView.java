@@ -10,8 +10,8 @@ import android.view.View;
 
 import androidx.core.content.ContextCompat;
 
-import com.jerry.baselib.util.DisplayUtil;
 import com.jerry.baselib.R;
+import com.jerry.baselib.util.DisplayUtil;
 
 /**
  * Created by wzl on 2018/8/10.

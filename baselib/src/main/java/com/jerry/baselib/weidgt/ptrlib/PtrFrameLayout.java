@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-import com.jerry.baselib.weidgt.ptrlib.indicator.PtrIndicator;
 import com.jerry.baselib.R;
+import com.jerry.baselib.weidgt.ptrlib.indicator.PtrIndicator;
 
 /**
  * This layout view for "Pull to Refresh(Ptr)" support all of the view, you can contain everything you want. support: pull to refresh / release to

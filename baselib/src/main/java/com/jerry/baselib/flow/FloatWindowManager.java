@@ -3,16 +3,14 @@ package com.jerry.baselib.flow;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 
 import androidx.core.content.ContextCompat;
 
 import com.jerry.baselib.App;
+import com.jerry.baselib.R;
 import com.jerry.baselib.access.BaseListenerService;
 import com.jerry.baselib.flow.FloatMenuView.SimpleMenuClickListener;
-import com.jerry.baselib.R;
-import com.jerry.baselib.impl.OnItemClickListener;
 
 /**
  * @author Jerry
@@ -28,7 +26,6 @@ public class FloatWindowManager {
         BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.pause), "0");
     private final ArrayList<FloatItem> itemList = new ArrayList<>();
     private final FloatLogoMenu menu;
-    private OnItemClickListener<String> mOnItemClickListener;
 
     private static volatile FloatWindowManager sWindowManager;
 
@@ -60,21 +57,14 @@ public class FloatWindowManager {
                 @Override
                 public void onItemClick(final int position, final String title) {
                     super.onItemClick(position, title);
-                    mOnItemClickListener.onItemClick(title, position);
                     BaseListenerService service = BaseListenerService.getInstance();
                     if (service.isPlaying) {
                         service.stop();
                     } else {
-                        Intent intent = new Intent("android.accessibilityservice.AccessibilityService");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        service.startActivity(intent);
+                        service.startScript();
                     }
                 }
             });
-    }
-
-    public void init(final OnItemClickListener<String> onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
     }
 
     public void show() {

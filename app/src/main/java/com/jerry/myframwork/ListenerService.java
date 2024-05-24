@@ -1,5 +1,7 @@
 package com.jerry.myframwork;
 
+import java.util.ArrayList;
+
 import com.jerry.baselib.access.BaseListenerService;
 
 public class ListenerService extends BaseListenerService {
@@ -11,7 +13,12 @@ public class ListenerService extends BaseListenerService {
     }
 
     @Override
-    public void onItemClick(final String bean, final int position) {
+    public ArrayList<String> getTaskUrl() {
+        return null;
+    }
+
+    @Override
+    public void handleHtml(final String url, final String html) {
 
     }
 }

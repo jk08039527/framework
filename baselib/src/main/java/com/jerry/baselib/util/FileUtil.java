@@ -10,6 +10,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -21,7 +24,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 
 import com.jerry.baselib.App;
-
+import com.jerry.baselib.bean.MediaBean;
 
 /**
  * 文件处理类
@@ -174,6 +177,60 @@ public class FileUtil {
         bm.compress(Bitmap.CompressFormat.JPEG, 40, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    /**
+     * 获取本地所有的图片
+     *
+     * @return list
+     */
+    public static List<MediaBean> getAllLocalPhotos(int state) {
+        ContentResolver contentResolver = App.getInstance().getContentResolver();
+        List<MediaBean> result = new ArrayList<>();
+        Uri uri;
+        Cursor cursor;
+        if (state == 0 || state == 1) {
+            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            cursor = contentResolver.query(uri, null, null, null, MediaStore.Images.Media.DATE_MODIFIED + " DESC");
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    String path = cursor.getString(index); // 文件地址
+                    index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
+                    String modified = cursor.getString(index); // 修改日期
+                    File file = new File(path);
+                    if (file.exists()) {
+                        MediaBean mediaBean = new MediaBean();
+                        mediaBean.setType(0);
+                        mediaBean.setUrl(path);
+                        mediaBean.setModified(modified);
+                        result.add(mediaBean);
+                    }
+                }
+            }
+        }
+        if (state == 0 || state == 2) {
+            uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            cursor = contentResolver.query(uri, null, null, null, MediaStore.Video.Media.DATE_MODIFIED + " DESC");
+            if (cursor != null && cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    int index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                    String path = cursor.getString(index); // 文件地址
+                    index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
+                    String modified = cursor.getString(index); // 修改日期
+                    File file = new File(path);
+                    if (file.exists()) {
+                        MediaBean mediaBean = new MediaBean();
+                        mediaBean.setType(1);
+                        mediaBean.setUrl(path);
+                        mediaBean.setModified(modified);
+                        result.add(mediaBean);
+                    }
+                }
+            }
+        }
+        Collections.sort(result);
+        return result;
     }
 
     public static boolean createOrExistsFile(final File file) {

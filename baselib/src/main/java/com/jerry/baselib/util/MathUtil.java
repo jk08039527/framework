@@ -27,6 +27,10 @@ public class MathUtil {
         return halfEven(min + ((max - min) * new Random().nextDouble()));
     }
 
+    public static int randomInt(double min, double max) {
+        return (int) (min + ((max - min) * new Random().nextDouble())) + 1;
+    }
+
     /**
      * int 数组的最大值
      */

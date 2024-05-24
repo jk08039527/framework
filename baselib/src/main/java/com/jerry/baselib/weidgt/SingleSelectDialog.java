@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.BaseRecyclerAdapter.OnItemClickListener;
 import com.jerry.baselib.base.RecyclerViewHolder;
 import com.jerry.baselib.util.CollectionUtils;
+import com.jerry.baselib.R;
 
 /**
  * Created by wzl on 2016/3/16.
@@ -67,7 +67,7 @@ public class SingleSelectDialog extends BaseDialog {
                 }
                 TextView tvTitle = holder.getView(R.id.tv_title);
                 tvTitle.setText(bean.title);
-                TextView tvContent = holder.getView(R.id.tv_start_time);
+                TextView tvContent = holder.getView(R.id.tv_content);
                 tvContent.setText(bean.content);
             }
         };

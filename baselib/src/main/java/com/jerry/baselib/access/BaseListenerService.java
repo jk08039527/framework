@@ -5,30 +5,20 @@ import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
-import android.app.Service;
 import android.graphics.Rect;
-import android.media.SoundPool;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
-import android.os.Vibrator;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
-import org.jetbrains.annotations.NotNull;
 
 import com.jerry.baselib.Key;
-import com.jerry.baselib.R;
 import com.jerry.baselib.flow.FloatWindowManager;
-import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.impl.OnDataCallback;
-import com.jerry.baselib.impl.OnItemClickListener;
 import com.jerry.baselib.util.ActionCode;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.LogUtils;
@@ -42,7 +32,7 @@ import com.jerry.baselib.util.WeakHandler;
  * <p>
  * 获取即时微信聊天记录服务类
  */
-public abstract class BaseListenerService extends AccessibilityService implements OnItemClickListener<String> {
+public abstract class BaseListenerService extends AccessibilityService {
 
     private static final String TAG = "BaseListenerService";
     protected static BaseListenerService instance;
@@ -53,6 +43,7 @@ public abstract class BaseListenerService extends AccessibilityService implement
     protected BaseTask currentTask;
     public static int mWidth;
     public static int mHeight;
+    protected final List<OnDataCallback<?>> mOnDataCallbacks = new ArrayList<>();
 
     public static BaseListenerService getInstance() {
         return instance;
@@ -73,7 +64,7 @@ public abstract class BaseListenerService extends AccessibilityService implement
         mWidth = getResources().getDisplayMetrics().widthPixels;
         mHeight = getResources().getDisplayMetrics().heightPixels;
         mGlobalActionAutomator = new GlobalActionAutomator(this);
-        FloatWindowManager.getInstance().init(this);
+        FloatWindowManager.getInstance().show();
     }
 
     /**
@@ -82,9 +73,6 @@ public abstract class BaseListenerService extends AccessibilityService implement
     public boolean start(int start) {
         if (startScript()) {
             mWeakHandler.sendEmptyMessage(start);
-            Bundle bundle = new Bundle();
-            bundle.putInt(Key.DATA, ActionCode.SERVICE_START);
-            EventBus.getDefault().post(bundle);
             return true;
         }
         return false;
@@ -96,24 +84,11 @@ public abstract class BaseListenerService extends AccessibilityService implement
     public void stop() {
         stopScript();
         mWeakHandler.removeCallbacksAndMessages(null);
-        Bundle bundle = new Bundle();
-        bundle.putInt(Key.DATA, ActionCode.SERVICE_STOP);
-        EventBus.getDefault().post(bundle);
     }
 
-    /**
-     * 震动发声提示
-     */
-    public void giveNotice() {
-        Vibrator vibrator = (Vibrator) getApplication().getSystemService(Service.VIBRATOR_SERVICE);
-        if (vibrator != null) {
-            vibrator.vibrate(new long[]{500, 1000, 500, 1000}, -1);
-        }
-        SoundPool mSoundPool;
-        mSoundPool = new SoundPool.Builder().setMaxStreams(10).build();
-        int mWinMusic = mSoundPool.load(this, R.raw.fadein, 1);
-        mSoundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> soundPool.play(mWinMusic, 0.6F, 0.6F, 0, 0, 1.0F));
-    }
+    public abstract ArrayList<String> getTaskUrl();
+
+    public abstract void handleHtml(final String url, final String html);
 
     public boolean startScript() {
         if (isPlaying) {
@@ -125,6 +100,9 @@ public abstract class BaseListenerService extends AccessibilityService implement
         if (currentTask != null) {
             currentTask.setIsPlaying(true);
         }
+        Bundle bundle = new Bundle();
+        bundle.putInt(Key.DATA, ActionCode.SERVICE_START);
+        EventBus.getDefault().post(bundle);
         FloatWindowManager.getInstance().startScript();
         return true;
     }
@@ -135,6 +113,9 @@ public abstract class BaseListenerService extends AccessibilityService implement
         if (currentTask != null) {
             currentTask.setIsPlaying(false);
         }
+        Bundle bundle = new Bundle();
+        bundle.putInt(Key.DATA, ActionCode.SERVICE_STOP);
+        EventBus.getDefault().post(bundle);
         FloatWindowManager.getInstance().stopScript();
     }
 
@@ -193,31 +174,6 @@ public abstract class BaseListenerService extends AccessibilityService implement
         ToastUtil.showShortText("我快被终结了啊-----");
     }
 
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-        FloatWindowManager.getInstance().show();
-    }
-
-    @Override
-    protected boolean onKeyEvent(KeyEvent event) {
-        Log.i(TAG, "onKeyEvent");
-        if (isPlaying) {
-            int key = event.getKeyCode();
-            switch (key) {
-                case KeyEvent.KEYCODE_VOLUME_DOWN:
-                    LogUtils.i("KEYCODE_VOLUME_DOWN");
-                    stop();
-                    return true;
-                case KeyEvent.KEYCODE_VOLUME_UP:
-                    LogUtils.i("KEYCODE_VOLUME_UP");
-                    return true;
-                default:
-                    break;
-            }
-        }
-        return super.onKeyEvent(event);
-    }
     public String getNodeText(AccessibilityNodeInfo root) {
         CharSequence txt = root.getText();
         if (txt == null) {
@@ -307,7 +263,16 @@ public abstract class BaseListenerService extends AccessibilityService implement
         if (newRootNode != null) {
             List<AccessibilityNodeInfo> nodes = newRootNode.findAccessibilityNodeInfosByText(text);
             if (!CollectionUtils.isEmpty(nodes)) {
-                return exeClick(nodes.get(0));
+                for (AccessibilityNodeInfo node : nodes) {
+                    CharSequence txt = node.getText();
+                    if (txt == null) {
+                        txt = Key.NIL;
+                    }
+                    String nodeText = txt.toString();
+                    if (text.equals(nodeText)) {
+                        return exeClick(node);
+                    }
+                }
             }
         }
         return false;
@@ -332,7 +297,7 @@ public abstract class BaseListenerService extends AccessibilityService implement
         if (CollectionUtils.isItemInCollection(index, strs)) {
             String str = strs.get(index);
             if (exeClickText(str)) {
-                mWeakHandler.postDelayed(() -> exeClickTexts(strs, index + 1, endCallback), getShotTime());
+                mWeakHandler.postDelayed(() -> exeClickTexts(strs, index + 1, endCallback), getSshotTime());
             } else {
                 errorCount++;
                 mWeakHandler.postDelayed(() -> exeClickTexts(strs, index, endCallback), getSshotTime());
@@ -373,35 +338,16 @@ public abstract class BaseListenerService extends AccessibilityService implement
         return true;
     }
 
-    public void registerDataCallBack(final OnDataCallback<?> onDataCallback) {
-        if (currentTask == null) {
-            onDataCallback.onDataCallback(null);
-        } else {
-            currentTask.registerDataCallBack(onDataCallback);
-        }
-    }
-
-    public void unregisterDataCallBack(final OnDataCallback<?> onDataCallback) {
-        if (currentTask == null) {
-            onDataCallback.onDataCallback(null);
-        } else {
-            currentTask.unregisterDataCallBack(onDataCallback);
-        }
-    }
-
-    public class ListenCallback implements Callback {
-
-        @Override
-        public boolean handleMessage(@NotNull final Message msg) {
+    public boolean registerDataCallBack(final OnDataCallback<?> onDataCallback) {
+        if (mOnDataCallbacks.contains(onDataCallback)) {
+            LogUtils.w("onDataCallback already registered");
             return false;
         }
+        return mOnDataCallbacks.add(onDataCallback);
     }
 
-    public class MyBinder extends Binder {
-
-        public BaseListenerService getService() {
-            return BaseListenerService.this;
-        }
+    public boolean unregisterDataCallBack(final OnDataCallback<?> onDataCallback) {
+        return mOnDataCallbacks.remove(onDataCallback);
     }
 
     public interface OnAccessibilityEventListener {
