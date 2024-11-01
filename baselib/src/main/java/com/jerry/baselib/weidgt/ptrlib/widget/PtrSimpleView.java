@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jerry.baselib.util.WeakHandler;
 import com.jerry.baselib.weidgt.ptrlib.OnRefreshListener;
+import com.jerry.baselib.util.WeakHandler;
 import com.jerry.baselib.weidgt.ptrlib.PtrDefaultHandler;
 import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
 import com.jerry.baselib.weidgt.ptrlib.header.PtrSimpleHeader;

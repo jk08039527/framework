@@ -8,13 +8,13 @@ import android.widget.LinearLayout;
 
 import androidx.core.widget.NestedScrollView;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.util.WeakHandler;
 import com.jerry.baselib.weidgt.ptrlib.OnRefreshListener;
 import com.jerry.baselib.weidgt.ptrlib.PtrDefaultHandler;
 import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
 import com.jerry.baselib.weidgt.ptrlib.PtrUIHandler;
 import com.jerry.baselib.weidgt.ptrlib.indicator.PtrIndicator;
-import com.jerry.baselib.R;
 
 /**
  * Created by wzl on 2019/9/23.

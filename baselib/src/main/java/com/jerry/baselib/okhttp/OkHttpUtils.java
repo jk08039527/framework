@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import com.jerry.baselib.App;
 import com.jerry.baselib.BuildConfig;
 import com.jerry.baselib.Key;
-import com.jerry.baselib.okhttp.builder.GetBuilder;
 import com.jerry.baselib.okhttp.builder.PostBuilder;
+import com.jerry.baselib.util.NetworkUtil;
+import com.jerry.baselib.okhttp.builder.GetBuilder;
 import com.jerry.baselib.okhttp.callback.Callback;
 import com.jerry.baselib.okhttp.request.RequestCall;
 import com.jerry.baselib.util.FileUtil;
 import com.jerry.baselib.util.LogUtils;
-import com.jerry.baselib.util.NetworkUtil;
 import com.jerry.baselib.util.WeakHandler;
 
 import okhttp3.Cache;
@@ -111,7 +111,7 @@ public class OkHttpUtils {
                 if (e instanceof SocketTimeoutException) {
                     sendFailResultCallback(TIMEOUT_MSG, finalCallback);
                 } else {
-                    if (NetworkUtil.isNetworkAvailable()) {
+                    if (NetworkUtil.isNetworkAvailable(false)) {
                         sendFailResultCallback(ERROR_MSG, finalCallback);
                     } else {
                         sendFailResultCallback(BROKEN_MSG, finalCallback);

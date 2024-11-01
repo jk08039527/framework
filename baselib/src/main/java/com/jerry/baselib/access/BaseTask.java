@@ -4,10 +4,12 @@ package com.jerry.baselib.access;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.SparseLongArray;
+
+import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.impl.OnDataCallback;
 import com.jerry.baselib.util.MathUtil;
 import com.jerry.baselib.util.WeakHandler;
-import com.jerry.baselib.impl.EndCallback;
 
 /**
  * @author Jerry
@@ -20,6 +22,7 @@ public abstract class BaseTask {
 
     protected final BaseListenerService mService;
     protected final WeakHandler mWeakHandler;
+    protected final SparseLongArray startTime = new SparseLongArray();
     protected boolean isPlaying;
     protected List<OnDataCallback<?>> mOnDataCallbacks;
 

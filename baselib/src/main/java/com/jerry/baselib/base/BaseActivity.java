@@ -11,10 +11,10 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.ToastUtil;
 import com.jerry.baselib.weidgt.RefreshDialog;
-import com.jerry.baselib.R;
 
 /**
  * @author Jerry

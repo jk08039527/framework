@@ -7,7 +7,7 @@ public interface PtrHandler {
     /**
      * Check can do refresh or not. For example the content is empty or the first child is in view.
      * <p/>
-     * {@link com.jerry.baselib.weidgt.ptrlib.PtrDefaultHandler#checkContentCanBePulledDown}
+     * {@link PtrDefaultHandler#checkContentCanBePulledDown}
      */
     boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header);
 

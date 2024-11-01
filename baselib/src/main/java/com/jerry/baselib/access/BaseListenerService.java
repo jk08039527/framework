@@ -5,7 +5,12 @@ import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
@@ -16,8 +21,11 @@ import androidx.annotation.NonNull;
 
 import org.greenrobot.eventbus.EventBus;
 
+import com.jerry.baselib.BuildConfig;
 import com.jerry.baselib.Key;
+import com.jerry.baselib.R;
 import com.jerry.baselib.flow.FloatWindowManager;
+import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.impl.OnDataCallback;
 import com.jerry.baselib.util.ActionCode;
 import com.jerry.baselib.util.CollectionUtils;
@@ -34,7 +42,8 @@ import com.jerry.baselib.util.WeakHandler;
  */
 public abstract class BaseListenerService extends AccessibilityService {
 
-    private static final String TAG = "BaseListenerService";
+    private static final String NOTIFICATION_CHANNEL_ID = BuildConfig.LIBRARY_PACKAGE_NAME + ".Foreground";
+    private static final int NOTIFICATION_FOREGROUND_ID = 9527;
     protected static BaseListenerService instance;
     private final List<OnAccessibilityEventListener> mOnAccessibilityEventListeners = new ArrayList<>();
     protected GlobalActionAutomator mGlobalActionAutomator;
@@ -61,6 +70,23 @@ public abstract class BaseListenerService extends AccessibilityService {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.channel_name),
+                NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(getString(R.string.channel_description));
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+            Notification.Builder builder = new Notification.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_ID).setContentTitle(
+                    getString(R.string.notification_foreground_title)).setContentText(getString(R.string.notification_foreground_title))
+                .setSmallIcon(R.drawable.idlefish_ic_launcher);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Android 13 及以上版本的处理
+                startForeground(NOTIFICATION_FOREGROUND_ID, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+            } else {
+                // 较低版本的处理
+                startForeground(NOTIFICATION_FOREGROUND_ID, builder.build());
+            }
+        }
         mWidth = getResources().getDisplayMetrics().widthPixels;
         mHeight = getResources().getDisplayMetrics().heightPixels;
         mGlobalActionAutomator = new GlobalActionAutomator(this);

@@ -7,12 +7,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.jerry.baselib.weidgt.ptrlib.PtrDefaultHandler;
-import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
+import com.jerry.baselib.R;
 import com.jerry.baselib.weidgt.ptrlib.itemdecoration.sticky.StickyHeadContainer;
 import com.jerry.baselib.weidgt.ptrlib.itemdecoration.sticky.StickyItemDecoration;
+import com.jerry.baselib.weidgt.ptrlib.itemdecoration.sticky.StickyItemDecoration.DataCallback;
 import com.jerry.baselib.weidgt.ptrlib.itemdecoration.sticky.TimeStickyItemDecoration;
-import com.jerry.baselib.R;
+import com.jerry.baselib.weidgt.ptrlib.PtrDefaultHandler;
+import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
 
 /**
  * @author Jerry
@@ -61,7 +62,7 @@ public class PtrStickyRecyclerView extends PtrRecyclerView {
         };
     }
 
-    public void addItemDecoration(View view, StickyItemDecoration.DataCallback dataCallback) {
+    public void addItemDecoration(View view, DataCallback dataCallback) {
         if (stickyHeadContainer.getChildCount() == 0) {
             stickyHeadContainer.addView(view);
         }

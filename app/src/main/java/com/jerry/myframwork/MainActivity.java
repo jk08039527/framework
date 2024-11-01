@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSON;
 import com.jerry.baselib.asyctask.AppTask;
 import com.jerry.baselib.asyctask.BackgroundTask;
 import com.jerry.baselib.asyctask.WhenTaskDone;
-import com.jerry.baselib.asyctask.WhenTaskEnd;
 import com.jerry.baselib.base.BaseRecyclerActivity;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.RecyclerViewHolder;
@@ -19,7 +18,6 @@ import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.ParseUtil;
 import com.jerry.myframwork.bean.MyCurrencyPair;
 import com.jerry.myframwork.dbhelper.MyDbManager;
-import com.jerry.myframwork.greendao.MyCurrencyPairDao.Properties;
 
 import io.gate.gateapi.ApiException;
 import io.gate.gateapi.api.SpotApi;

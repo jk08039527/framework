@@ -3,10 +3,9 @@ package com.jerry.baselib.picture;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
-import com.jerry.baselib.base.BaseFragment;
 import com.jerry.baselib.R;
+import com.jerry.baselib.base.BaseFragment;
 import com.jerry.baselib.weidgt.DragPhotoView;
-
 
 /**
  * @author Jerry

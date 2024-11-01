@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.util.WeakHandler;
 import com.jerry.baselib.weidgt.ptrlib.OnLoadMoreListener;
@@ -21,7 +22,6 @@ import com.jerry.baselib.weidgt.ptrlib.OnRefreshListener;
 import com.jerry.baselib.weidgt.ptrlib.PtrDefaultHandler;
 import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
 import com.jerry.baselib.weidgt.ptrlib.header.PtrSimpleHeader;
-import com.jerry.baselib.R;
 
 /**
  * Created by wzl on 2018/8/10.

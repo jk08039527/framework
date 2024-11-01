@@ -25,11 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.RecyclerViewHolder;
 import com.jerry.baselib.impl.OnDataCallback;
 import com.jerry.baselib.util.DisplayUtil;
 import com.jerry.baselib.util.WeakHandler;
-import com.jerry.baselib.R;
 
 /**
  * Created by wzl on 2018/6/10.

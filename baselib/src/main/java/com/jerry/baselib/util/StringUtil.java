@@ -2,11 +2,13 @@ package com.jerry.baselib.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.text.TextUtils;
+import android.util.ArrayMap;
 
 import com.jerry.baselib.Key;
 
@@ -18,8 +20,20 @@ import com.jerry.baselib.Key;
  */
 public class StringUtil {
 
+    private static final ArrayMap<String,String> JSCODE_SWITCHER = new ArrayMap<>();
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^1[3456789]\\d{9}$");
+
+    static {
+        JSCODE_SWITCHER.put("\\u003C", "<");
+        JSCODE_SWITCHER.put("\\u003E", ">");
+        JSCODE_SWITCHER.put("\\u002F", "/");
+        JSCODE_SWITCHER.put("&#x3D;\\", "=");
+        JSCODE_SWITCHER.put("&quot;", "");
+        JSCODE_SWITCHER.put("\\", "");
+    }
+
     public static void main(String[] strings) {
-        System.out.println(getRandomInt(0, 2));
+        System.out.println(getNumberFromText("塑料袋福建省看62.67dd；‘顺口溜福克斯了；df"));
     }
 
     /**
@@ -61,6 +75,28 @@ public class StringUtil {
         }
         Random random = new Random();
         return random.nextInt(max) % (max - min + 1) + min;
+    }
+
+    public static String getRandomString(int length) {
+        String str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(str.length());
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
+    }
+
+    public static String getRandomNumString(int length) {
+        String str = "0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(str.length());
+            sb.append(str.charAt(number));
+        }
+        return sb.toString();
     }
 
     public static List<String> getPicsFromStr(String str) {
@@ -136,6 +172,15 @@ public class StringUtil {
         return !TextUtils.isEmpty(filterSpecialStr(regex, desc));
     }
 
+    public static String switchJsCode(String text) {
+        for (Entry<String, String> stringStringEntry : JSCODE_SWITCHER.entrySet()) {
+            text = text.replace(stringStringEntry.getKey(), stringStringEntry.getValue());
+        }
+        if (text.startsWith("\"") && text.endsWith("\"")) {
+            text = text.substring(1, text.length() - 1);
+        }
+        return text;
+    }
 
     /**
      * 参数1 regex:我们的正则字符串 参数2 就是一大段文本，这里用data表示
@@ -153,5 +198,13 @@ public class StringUtil {
             sb.append(matcher.group() + "\r\n");
         }
         return sb.toString();
+    }
+
+    /**
+     * 是否为手机号
+     */
+    public static boolean isPhoneNumber(String phoneStr) {
+        // 定义手机号正则表达式
+        return PHONE_PATTERN.matcher(phoneStr).matches();
     }
 }

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jerry.baselib.R;
 
-
 /**
  * @author Jerry
  * @createDate 2019/4/11

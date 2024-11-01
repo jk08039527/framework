@@ -20,7 +20,7 @@ public class CenterSnapHelper extends OnFlingListener {
 
     /**
      * when the dataSet is extremely large
-     * {@link #snapToCenterView(com.jerry.baselib.weidgt.banner.BannerLayoutManager, com.jerry.baselib.weidgt.banner.BannerLayoutManager.OnPageChangeListener)}
+     * {@link #snapToCenterView(BannerLayoutManager, BannerLayoutManager.OnPageChangeListener)}
      * may keep calling itself because the accuracy of float
      */
     private boolean snapToCenter = false;
@@ -105,7 +105,7 @@ public class CenterSnapHelper extends OnFlingListener {
 
     /**
      * Please attach after {{@link LayoutManager} is setting}
-     * Attaches the {@link com.jerry.baselib.weidgt.banner.CenterSnapHelper} to the provided RecyclerView, by calling
+     * Attaches the {@link CenterSnapHelper} to the provided RecyclerView, by calling
      * {@link RecyclerView#setOnFlingListener(OnFlingListener)}.
      * You can call this method with {@code null} to detach it from the current RecyclerView.
      *

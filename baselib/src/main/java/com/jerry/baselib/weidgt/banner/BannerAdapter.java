@@ -8,12 +8,12 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jerry.baselib.Key;
-import com.jerry.baselib.bean.BannerBean;
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.RecyclerViewHolder;
-import com.jerry.baselib.util.CollectionUtils;
+import com.jerry.baselib.bean.BannerBean;
 import com.jerry.baselib.parsehelper.WebViewActivity;
-import com.jerry.baselib.R;
+import com.jerry.baselib.util.CollectionUtils;
 
 /**
  * Created by zhangkk on 2018/6/10.

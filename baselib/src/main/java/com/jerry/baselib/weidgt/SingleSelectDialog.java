@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.BaseRecyclerAdapter.OnItemClickListener;
 import com.jerry.baselib.base.RecyclerViewHolder;
 import com.jerry.baselib.util.CollectionUtils;
-import com.jerry.baselib.R;
 
 /**
  * Created by wzl on 2016/3/16.
  *
- * @Description 单选类型对话框, (有title)
+ * @Description 通知类型对话框, (有title)
  */
 public class SingleSelectDialog extends BaseDialog {
 

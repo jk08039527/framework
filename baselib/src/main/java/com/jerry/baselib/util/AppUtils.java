@@ -12,6 +12,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.media.SoundPool;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -50,7 +51,7 @@ public class AppUtils {
      * 是否快速点击
      */
     public static boolean isFastDoubleClick() {
-        long time = System.currentTimeMillis();
+        long time = SystemClock.elapsedRealtime();
         long timeD = time - lastClickTime;
         if (0 < timeD && timeD < ViewConfiguration.getJumpTapTimeout()) {
             return true;

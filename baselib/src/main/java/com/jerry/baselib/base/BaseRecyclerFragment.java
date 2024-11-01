@@ -9,10 +9,10 @@ import android.view.View;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.NetworkUtil;
 import com.jerry.baselib.weidgt.ptrlib.widget.PtrRecyclerView;
-import com.jerry.baselib.R;
 
 public abstract class BaseRecyclerFragment<T> extends BaseFragment implements BaseRecyclerAdapter.OnItemClickListener {
 
@@ -70,7 +70,7 @@ public abstract class BaseRecyclerFragment<T> extends BaseFragment implements Ba
         if (mAdapter != null && !CollectionUtils.isEmpty(mData)) {
             mAdapter.notifyDataSetChanged();
         } else if (canLoadMore) {
-            if (NetworkUtil.isNetworkAvailable() && mData.size() == 0) {
+            if (NetworkUtil.isNetworkAvailable(true) && mData.size() == 0) {
                 loadingDialog();
             }
             getData();

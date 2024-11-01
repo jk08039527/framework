@@ -41,7 +41,7 @@ public class EditDialog extends BaseDialog {
     public void setDialogTitle(String title) {
         this.title = title;
         if (tvTitle != null) {
-            tvTitle.setHint(title);
+            tvTitle.setText(title);
         }
     }
 
@@ -61,5 +61,11 @@ public class EditDialog extends BaseDialog {
 
     public String getEditText() {
         return mEditText.getText().toString().trim();
+    }
+
+    public void setInputType(int inputType) {
+        if (mEditText != null) {
+            mEditText.setInputType(inputType);
+        }
     }
 }

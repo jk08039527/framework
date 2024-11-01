@@ -7,9 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.jerry.baselib.weidgt.ptrlib.RefreshingView;
 import com.jerry.baselib.R;
-
+import com.jerry.baselib.weidgt.ptrlib.RefreshingView;
 
 public class RefreshDialog extends Dialog {
 

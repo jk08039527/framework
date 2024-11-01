@@ -680,7 +680,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
     /**
      * cause elevation is not support below api 21,
      * so you can set your elevation here for supporting it below api 21
-     * or you can just setElevation in {@link #setItemViewProperty(android.view.View, float)}
+     * or you can just setElevation in {@link #setItemViewProperty(View, float)}
      */
     protected float setViewElevation(View itemView, float targetOffset) {
         return 0;
@@ -775,7 +775,7 @@ public class BannerLayoutManager extends RecyclerView.LayoutManager {
     }
 
     /**
-     * Sets the orientation of the layout. {@link com.jerry.baselib.weidgt.banner.BannerLayoutManager}
+     * Sets the orientation of the layout. {@link BannerLayoutManager}
      * will do its best to keep scroll position.
      *
      * @param orientation {@link #HORIZONTAL} or {@link #VERTICAL}

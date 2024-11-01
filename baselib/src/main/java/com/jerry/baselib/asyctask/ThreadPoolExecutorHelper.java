@@ -38,13 +38,13 @@ public class ThreadPoolExecutorHelper {
      * A ThreadFactory builder, providing any combination of these features:
      * <ul>
      * <li>whether threads should be marked as {@linkplain Thread#setDaemon daemon} threads
-     * <li>a {@linkplain com.jerry.baselib.asyctask.ThreadPoolExecutorHelper.ThreadFactoryBuilder#setNameFormat naming format}
+     * <li>a {@linkplain ThreadFactoryBuilder#setNameFormat naming format}
      * <li>a {@linkplain Thread#setPriority thread priority}
      * <li>an {@linkplain Thread#setUncaughtExceptionHandler uncaught exception handler}
-     * <li>a {@linkplain java.util.concurrent.ThreadFactory#newThread backing thread factory}
+     * <li>a {@linkplain ThreadFactory#newThread backing thread factory}
      * </ul>
      * <p>If no backing thread factory is provided, a default backing thread factory is used as if by
-     * calling {@code setThreadFactory(}{@link java.util.concurrent.Executors#defaultThreadFactory()}{@code )}.
+     * calling {@code setThreadFactory(}{@link Executors#defaultThreadFactory()}{@code )}.
      *
      * @author Kurt Alfred Kluever
      * @since 4.0
@@ -55,7 +55,7 @@ public class ThreadPoolExecutorHelper {
         private Boolean daemon;
 
         /**
-         * Creates a new {@link java.util.concurrent.ThreadFactory} builder.
+         * Creates a new {@link ThreadFactory} builder.
          */
         ThreadFactoryBuilder() {
         }
@@ -113,7 +113,7 @@ public class ThreadPoolExecutorHelper {
          * building, it is still possible to change the options used to build the ThreadFactory and/or
          * build again. State is not shared amongst built instances.
          *
-         * @return the fully constructed {@link java.util.concurrent.ThreadFactory}
+         * @return the fully constructed {@link ThreadFactory}
          */
         public ThreadFactory build() {
             return doBuild(this);

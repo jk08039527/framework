@@ -1,7 +1,5 @@
 package com.jerry.myframwork;
 
-import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Intent;
 
 import com.jerry.baselib.App;
@@ -14,20 +12,11 @@ import io.gate.gateapi.Configuration;
  *
  * @Description
  */
-public class MyApplication extends Application {
-
-    @SuppressLint("StaticFieldLeak")
-    private static Application mInstance;
-
-    public static Application getInstance() {
-        return mInstance;
-    }
+public class MyApplication extends App {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mInstance = this;
-        App.init(this);
         startService(new Intent(this, ListenerService.class));
         ApiClient defaultClient = Configuration.getDefaultApiClient();
         defaultClient.setBasePath("https://api.gateio.ws/api/v4");

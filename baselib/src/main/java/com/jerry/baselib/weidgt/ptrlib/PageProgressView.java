@@ -25,9 +25,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.util.MyAnimationListener;
 import com.jerry.baselib.util.WeakHandler;
-import com.jerry.baselib.R;
 
 /**
  * @author th 2015-9-23 类说明：网页加载进度条

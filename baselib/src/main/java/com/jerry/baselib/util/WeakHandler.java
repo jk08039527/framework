@@ -45,7 +45,7 @@ import androidx.annotation.VisibleForTesting;
  * referenced any more
  * <p/>
  *
- * @see android.os.Handler
+ * @see Handler
  */
 @SuppressWarnings("unused")
 public class WeakHandler {
@@ -58,7 +58,7 @@ public class WeakHandler {
     private final ChainedRef mRunnables = new ChainedRef(mLock, null);
 
     /**
-     * Default constructor associates this handler with the {@link android.os.Looper} for the current thread.
+     * Default constructor associates this handler with the {@link Looper} for the current thread.
      *
      * If this thread does not have a looper, this handler won't be able to receive messages so an exception is thrown.
      */
@@ -68,7 +68,7 @@ public class WeakHandler {
     }
 
     /**
-     * Constructor associates this handler with the {@link android.os.Looper} for the current thread and takes a callback interface in which you can handle
+     * Constructor associates this handler with the {@link Looper} for the current thread and takes a callback interface in which you can handle
      * messages.
      *
      * If this thread does not have a looper, this handler won't be able to receive messages so an exception is thrown.
@@ -81,7 +81,7 @@ public class WeakHandler {
     }
 
     /**
-     * Use the provided {@link android.os.Looper} instead of the default one.
+     * Use the provided {@link Looper} instead of the default one.
      *
      * @param looper The looper, must not be null.
      */
@@ -91,7 +91,7 @@ public class WeakHandler {
     }
 
     /**
-     * Use the provided {@link android.os.Looper} instead of the default one and take a callback interface in which to handle messages.
+     * Use the provided {@link Looper} instead of the default one and take a callback interface in which to handle messages.
      *
      * @param looper The looper, must not be null.
      * @param callback The callback interface in which to handle messages, or null.
@@ -215,7 +215,7 @@ public class WeakHandler {
      *
      * @return Returns true if the message was successfully placed in to the message queue. Returns false on failure, usually because the looper
      * processing the message queue is exiting.
-     * @see #sendMessageDelayed(android.os.Message, long)
+     * @see #sendMessageDelayed(Message, long)
      */
     public final boolean sendEmptyMessageDelayed(int what, long delayMillis) {
         return mExec.sendEmptyMessageDelayed(what, delayMillis);
@@ -226,7 +226,7 @@ public class WeakHandler {
      *
      * @return Returns true if the message was successfully placed in to the message queue. Returns false on failure, usually because the looper
      * processing the message queue is exiting.
-     * @see #sendMessageAtTime(android.os.Message, long)
+     * @see #sendMessageAtTime(Message, long)
      */
     public final boolean sendEmptyMessageAtTime(int what, long uptimeMillis) {
         return mExec.sendEmptyMessageAtTime(what, uptimeMillis);
@@ -271,7 +271,7 @@ public class WeakHandler {
     }
 
     /**
-     * Returns a new {@link android.os.Message Message} from the global message pool. More efficient than
+     * Returns a new {@link Message Message} from the global message pool. More efficient than
      * creating and allocating new instances. The retrieved message has its handler set to this instance (Message.target == this).
      * If you don't want that facility, just call Message.obtain() instead.
      */

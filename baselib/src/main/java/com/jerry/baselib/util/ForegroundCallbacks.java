@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.jerry.baselib.App;
+
 /**
  * Created by th on 2017/7/18. 类说明:监听应用前后台切换
  */
@@ -31,6 +33,7 @@ public class ForegroundCallbacks implements ActivityLifecycleCallbacks {
                 LogUtils.d("================================    onForeground exec    ================================");
                 ((ForegroundListener) lastActivity).onForeground();
             }
+            App.getInstance().setBackGround(false);
         }
         mStartCount++;
     }
@@ -44,6 +47,7 @@ public class ForegroundCallbacks implements ActivityLifecycleCallbacks {
                 ((ForegroundListener) activity).onBackground();
             }
             mActivityWeakReference = new WeakReference<>(activity);
+            App.getInstance().setBackGround(true);
         }
     }
 

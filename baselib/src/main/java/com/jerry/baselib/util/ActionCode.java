@@ -14,4 +14,6 @@ public class ActionCode {
     public static final int USER_BIND = 5;
     public static final int SERVICE_START = 6;
     public static final int SERVICE_STOP = 7;
+    public static final int CLOSE_WEB = 8;
+    public static final int LOGOUT = 9;
 }

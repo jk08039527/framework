@@ -8,10 +8,10 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView.LayoutManager;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.util.NetworkUtil;
 import com.jerry.baselib.weidgt.ptrlib.OnLoadMoreListener;
 import com.jerry.baselib.weidgt.ptrlib.widget.PtrRecyclerView;
-import com.jerry.baselib.R;
 
 public abstract class BaseRecyclerActivity<T> extends BaseActivity implements BaseRecyclerAdapter.OnItemClickListener {
 

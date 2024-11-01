@@ -16,6 +16,7 @@ public class PreferenceHelp {
 
     private PreferenceHelp() {
     }
+
     private static final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(App.getInstance());
 
     public static String getString(String strKey) {

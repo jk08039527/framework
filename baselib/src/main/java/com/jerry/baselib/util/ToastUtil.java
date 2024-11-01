@@ -6,8 +6,6 @@ import android.widget.Toast;
 
 import com.jerry.baselib.App;
 
-import static android.os.Looper.getMainLooper;
-
 /**
  * 自定义的Toast工具类，为了避免用户不间断点击 也可以显示自定义的Toast
  *
@@ -55,7 +53,7 @@ public class ToastUtil {
         if (checkThread()) {
             showText(s, Toast.LENGTH_SHORT);
         } else {
-            new WeakHandler(getMainLooper()).post(() -> showShortText(s));
+            new WeakHandler(Looper.getMainLooper()).post(() -> showShortText(s));
         }
     }
 
@@ -77,12 +75,12 @@ public class ToastUtil {
         if (checkThread()) {
             showText(s, Toast.LENGTH_LONG);
         } else {
-            new WeakHandler(getMainLooper()).post(() -> showShortText(s));
+            new WeakHandler(Looper.getMainLooper()).post(() -> showShortText(s));
         }
     }
 
 
     private static boolean checkThread() {
-        return Looper.myLooper() == getMainLooper();
+        return Looper.myLooper() == Looper.getMainLooper();
     }
 }

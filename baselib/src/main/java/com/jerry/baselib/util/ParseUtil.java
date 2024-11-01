@@ -1,5 +1,7 @@
 package com.jerry.baselib.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -77,6 +79,18 @@ public class ParseUtil {
             ignored.printStackTrace();
         }
         return defaultFloat;
+    }
+
+    /**
+     * 解析以字符串表示的双精度浮点类型
+     */
+    public static float parse2Float(String s) {
+        try {
+            return new BigDecimal(s).setScale(2, RoundingMode.HALF_EVEN).floatValue();
+        } catch (Exception e) {
+            LogUtils.w("parse2Float error");
+        }
+        return 0;
     }
 
     /**

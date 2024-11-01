@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.StringRes;
 
-import com.jerry.baselib.util.DisplayUtil;
 import com.jerry.baselib.R;
+import com.jerry.baselib.util.DisplayUtil;
 
 /**
  * Created by wzl on 2016/10/24.

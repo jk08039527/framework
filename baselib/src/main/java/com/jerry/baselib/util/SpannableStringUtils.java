@@ -62,8 +62,8 @@ public final class SpannableStringUtils {
         /**
          * 设置标识
          *
-         * @param flag <ul> <li>{@link android.text.Spanned#SPAN_EXCLUSIVE_EXCLUSIVE}</li> <li>{@link android.text.Spanned#SPAN_EXCLUSIVE_INCLUSIVE}</li> <li>{@link
-         *             android.text.Spanned#SPAN_INCLUSIVE_INCLUSIVE}</li> <li>{@link android.text.Spanned#SPAN_INCLUSIVE_EXCLUSIVE}</li> </ul>
+         * @param flag <ul> <li>{@link Spanned#SPAN_EXCLUSIVE_EXCLUSIVE}</li> <li>{@link Spanned#SPAN_EXCLUSIVE_INCLUSIVE}</li> <li>{@link
+         *             Spanned#SPAN_INCLUSIVE_INCLUSIVE}</li> <li>{@link Spanned#SPAN_INCLUSIVE_EXCLUSIVE}</li> </ul>
          */
         public Builder setFlag(final int flag) {
             this.flag = flag;

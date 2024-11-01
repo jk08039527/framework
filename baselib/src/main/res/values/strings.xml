@@ -46,5 +46,14 @@
     <string name="percentage_sign">%</string>
     <string name="select_all">全选</string>
     <string name="select_not_all">全不选</string>
+    <string name="title">标题</string>
+    <string name="discover_update">发现新版本</string>
+    <string name="link_empty">跳转链接为空</string>
+    <string name="copy_link">复制链接地址>></string>
+    <string name="copy_failed">复制失败</string>
+    <string name="copy_success">复制成功</string>
+    <string name="channel_name">后台保活提示</string>
+    <string name="channel_description">后台保活提示</string>
+    <string name="notification_foreground_title">服务运行中</string>
 
 </resources>

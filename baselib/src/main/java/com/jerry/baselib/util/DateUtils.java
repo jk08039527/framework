@@ -17,6 +17,7 @@ public class DateUtils {
 
     private static final String YYYYMMDD = "yyyy-MM-dd";
     private static final String HHMMSS = "HH:mm:ss";
+    private static final String MMDD_HHMM = "MM-dd HH:mm";
     private static final String YYYYMMDD_HHMM = "yyyy-MM-dd HH:mm";
     public static final String YYYYMMDD_HHMMSS = "yyyy-MM-dd HH:mm:ss";
     public static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
@@ -24,6 +25,7 @@ public class DateUtils {
 
     private static final SimpleDateFormat FORMAT_DATE = new SimpleDateFormat(YYYYMMDD, Locale.CHINA);
     private static final SimpleDateFormat FORMAT_TIME = new SimpleDateFormat(HHMMSS, Locale.CHINA);
+    private static final SimpleDateFormat FORMAT_MDHM = new SimpleDateFormat(MMDD_HHMM, Locale.CHINA);
     private static final SimpleDateFormat FORMAT_DATE_TIME = new SimpleDateFormat(YYYYMMDD_HHMM, Locale.CHINA);
     private static final SimpleDateFormat FORMAT_DATE_TIME_SS = new SimpleDateFormat(YYYYMMDD_HHMMSS, Locale.CHINA);
     private static final SimpleDateFormat FORMAT_DATETIME = new SimpleDateFormat(YYYYMMDDHHMMSS, Locale.CHINA);
@@ -39,21 +41,9 @@ public class DateUtils {
     /**
      *
      */
-    public static synchronized long getLongByDateTime2(String dateStr) {
+    public static synchronized long getLongByDateTime(String dateStr) {
         try {
             return FORMAT_DATETIME.parse(dateStr).getTime();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    /**
-     *
-     */
-    public static synchronized long getLongByDateTime(String dateTimeStr) {
-        try {
-            return FORMAT_DATETIME.parse(dateTimeStr).getTime();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,6 +75,15 @@ public class DateUtils {
         Date date = new Date();
         date.setTime(time);
         return FORMAT_DATETIME.format(date);
+    }
+
+    /**
+     * 获取日期时分
+     */
+    public static synchronized String getMDHMByLong(long time) {
+        Date date = new Date();
+        date.setTime(time);
+        return FORMAT_MDHM.format(date);
     }
 
     /**

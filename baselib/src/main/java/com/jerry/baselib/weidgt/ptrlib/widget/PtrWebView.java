@@ -25,13 +25,13 @@ import android.widget.LinearLayout;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
-import com.jerry.baselib.base.BaseActivity;
-import com.jerry.baselib.util.LogUtils;
-import com.jerry.baselib.util.NetworkUtil;
-import com.jerry.baselib.util.ToastUtil;
-import com.jerry.baselib.weidgt.ptrlib.PageProgressView;
-import com.jerry.baselib.weidgt.ptrlib.header.PtrSimpleHeader;
 import com.jerry.baselib.R;
+import com.jerry.baselib.base.BaseActivity;
+import com.jerry.baselib.util.NetworkUtil;
+import com.jerry.baselib.weidgt.ptrlib.PageProgressView;
+import com.jerry.baselib.util.LogUtils;
+import com.jerry.baselib.util.ToastUtil;
+import com.jerry.baselib.weidgt.ptrlib.header.PtrSimpleHeader;
 
 public class PtrWebView extends PtrSimpleView {
 
@@ -262,7 +262,7 @@ public class PtrWebView extends PtrSimpleView {
 
     public String getTitle() {
         if (mWebView == null) {
-            return mContext.getString(R.string.webpage);
+            return mContext.getString(R.string.title);
         }
         return mWebView.getTitle();
     }

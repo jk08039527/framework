@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
+import com.jerry.baselib.Key;
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseActivity;
 import com.jerry.baselib.base.FragmentViewPagerAdapter;
 import com.jerry.baselib.util.CollectionUtils;
-import com.jerry.baselib.Key;
-import com.jerry.baselib.R;
 
 /**
  * @author Jerry

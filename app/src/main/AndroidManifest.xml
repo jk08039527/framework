@@ -26,6 +26,7 @@
         <service
             android:enabled="true"
             android:exported="true"
+            android:foregroundServiceType="dataSync"
             android:label="@string/app_name"
             android:name=".ListenerService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">

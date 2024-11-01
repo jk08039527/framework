@@ -8,10 +8,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jerry.baselib.R;
-import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
 import com.jerry.baselib.weidgt.ptrlib.PtrUIHandler;
-import com.jerry.baselib.weidgt.ptrlib.RefreshingView;
 import com.jerry.baselib.weidgt.ptrlib.indicator.PtrIndicator;
+import com.jerry.baselib.weidgt.ptrlib.PtrFrameLayout;
+import com.jerry.baselib.weidgt.ptrlib.RefreshingView;
 
 /**
  * Created by wzl on 2018/8/10.

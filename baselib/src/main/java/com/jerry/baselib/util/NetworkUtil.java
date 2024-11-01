@@ -3,6 +3,8 @@ package com.jerry.baselib.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -203,5 +205,28 @@ public class NetworkUtil {
         String proxyPortString = System.getProperty("http.proxyPort");
         proxyPort = Integer.parseInt((proxyPortString != null ? proxyPortString : "-1"));
         return !TextUtils.isEmpty(proxyAddress) && proxyPort != -1;
+    }
+
+    /**
+     * 判断当前网络是否为VPN
+     */
+    public static boolean hasVpn() {
+        try {
+            // 查询网络状态，被动监听网络状态变化
+            ConnectivityManager cm = (ConnectivityManager) App.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+            // 获取当前来凝结网络
+            Network currentNetwork = cm.getActiveNetwork();
+            // 获取当前网络能力
+            NetworkCapabilities networkCapabilities = cm.getNetworkCapabilities(currentNetwork);
+            // 是否是VPN端口
+            return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+            // 是否为wifi
+//        return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+            // 是否为蜂窝网络
+//        return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        } catch (Exception e) {
+            LogUtils.w("hasVpn check error");
+        }
+        return false;
     }
 }
