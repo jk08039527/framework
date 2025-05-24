@@ -1,19 +1,44 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
+def keystoreDir = file(rootDir.getAbsolutePath() + "/keystore")
+
 android {
     compileSdkVersion 33
     defaultConfig {
-        applicationId "com.jerry.myframwork"
+        applicationId "com.jerry.veoas"
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
+        buildConfigField("String", "AVOS_APP_ID", '"058e8489df1127010c6f8d543c527608"')
+    }
+    signingConfigs {
+        config {
+            keyAlias 'idlefish'
+            keyPassword '999999'
+            storeFile new File(keystoreDir, "idlefish.keystore")
+            storePassword '999999'
+        }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            //设置混淆
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            pseudoLocalesEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            //设置混淆
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            pseudoLocalesEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     compileOptions {
@@ -30,5 +55,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':baselib')
-    implementation 'io.gate:gate-api:6.57.0'
+    implementation 'io.github.bmob:android-sdk:3.9.4'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.8.1'
+    implementation 'com.squareup.okio:okio:2.2.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

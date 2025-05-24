@@ -11,6 +11,7 @@ import com.jerry.baselib.App;
 import com.jerry.baselib.R;
 import com.jerry.baselib.access.BaseListenerService;
 import com.jerry.baselib.flow.FloatMenuView.SimpleMenuClickListener;
+import com.jerry.baselib.util.ToastUtil;
 
 /**
  * @author Jerry
@@ -20,7 +21,7 @@ import com.jerry.baselib.flow.FloatMenuView.SimpleMenuClickListener;
  */
 public class FloatWindowManager {
 
-    private final FloatItem configItem = new FloatItem("配置", -0x67000000, -0x67000000,
+    private final FloatItem configItem = new FloatItem("开始", -0x67000000, -0x67000000,
         BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.play), "0");
     private final FloatItem stopItem = new FloatItem("暂停", -0x67000000, -0x67000000,
         BitmapFactory.decodeResource(App.getInstance().getResources(), R.drawable.pause), "0");
@@ -61,7 +62,9 @@ public class FloatWindowManager {
                     if (service.isPlaying) {
                         service.stop();
                     } else {
-                        service.startScript();
+                        if (!service.start(position)) {
+                            ToastUtil.showShortText("启动失败");
+                        }
                     }
                 }
             });

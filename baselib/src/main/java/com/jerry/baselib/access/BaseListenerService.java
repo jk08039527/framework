@@ -8,12 +8,14 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -28,6 +30,7 @@ import com.jerry.baselib.flow.FloatWindowManager;
 import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.impl.OnDataCallback;
 import com.jerry.baselib.util.ActionCode;
+import com.jerry.baselib.util.AppUtils;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.MathUtil;
@@ -97,9 +100,16 @@ public abstract class BaseListenerService extends AccessibilityService {
      * 开启任务
      */
     public boolean start(int start) {
-        if (startScript()) {
+        AccessibilityNodeInfo nodeInfo = getRootInActiveWindow();
+        if (nodeInfo != null && startScript()) {
             mWeakHandler.sendEmptyMessage(start);
             return true;
+        }
+        if (nodeInfo == null){
+            ToastUtil.showShortText("需要开启辅助");
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
         return false;
     }
@@ -183,7 +193,7 @@ public abstract class BaseListenerService extends AccessibilityService {
     /**
      * 判断是否为首页
      */
-    protected boolean hasText(String text) {
+    public boolean hasText(String text) {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         if (rootNode == null) {
             return false;
@@ -248,8 +258,8 @@ public abstract class BaseListenerService extends AccessibilityService {
         return Key.NIL;
     }
 
-    public void back() {
-        performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+    public boolean back() {
+        return performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
     }
 
     @SuppressLint("DefaultLocale")
@@ -272,6 +282,18 @@ public abstract class BaseListenerService extends AccessibilityService {
         int x = (rect.left + rect.right) >> 1;
         int y = (rect.top + rect.bottom) >> 1;
         return exeLongClick(x, y);
+    }
+
+    @SuppressLint("DefaultLocale")
+    public boolean exeClickById(String id) {
+        AccessibilityNodeInfo newRootNode = getRootInActiveWindow();
+        if (newRootNode != null) {
+            List<AccessibilityNodeInfo> nodes = newRootNode.findAccessibilityNodeInfosByViewId(id);
+            if (!CollectionUtils.isEmpty(nodes)) {
+                return exeClick(nodes.get(0));
+            }
+        }
+        return false;
     }
 
     @SuppressLint("DefaultLocale")

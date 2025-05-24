@@ -3,7 +3,6 @@ package com.jerry.myframwork.bean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 
-import io.gate.gateapi.models.CurrencyPair;
 import org.greenrobot.greendao.annotation.Generated;
 
 /**
@@ -13,7 +12,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * @description
  */
 @Entity
-public class MyCurrencyPair extends CurrencyPair {
+public class MyCurrencyPair {
 
     @Id()
     public String id;

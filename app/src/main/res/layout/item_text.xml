@@ -13,15 +13,6 @@
         android:layout_marginHorizontal="@dimen/page_margin"
         android:textSize="@dimen/_16sp" />
 
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/eight_dp"
-        android:layout_marginHorizontal="@dimen/page_margin"
-        android:textColor="@color/second_text_color"
-        android:textSize="@dimen/_14sp" />
-
     <View
         style="@style/horizontal_line_style"
         android:layout_marginTop="@dimen/eight_dp" />

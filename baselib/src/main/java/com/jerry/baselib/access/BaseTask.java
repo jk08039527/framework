@@ -25,6 +25,8 @@ public abstract class BaseTask {
     protected final SparseLongArray startTime = new SparseLongArray();
     protected boolean isPlaying;
     protected List<OnDataCallback<?>> mOnDataCallbacks;
+    protected int taskState ;
+    protected int errorCount ;
 
     public BaseTask(final BaseListenerService listenerService, final WeakHandler weakHandler) {
         mService = listenerService;
@@ -42,7 +44,25 @@ public abstract class BaseTask {
 
     public void setIsPlaying(final boolean isPlaying) {
         this.isPlaying = isPlaying;
+        taskState = 0;
+        errorCount = 0;
         mWeakHandler.removeCallbacksAndMessages(null);
+    }
+
+    protected boolean input(String id, String text) {
+        return mService.input(PACKAGE_NAME + id, text);
+    }
+
+    protected boolean click(String id) {
+        return mService.exeClickById(PACKAGE_NAME + id);
+    }
+
+    protected boolean clickText(String text) {
+        return mService.exeClickText(text);
+    }
+
+    protected long getSShotTime() {
+        return MathUtil.random(1000, 2000);
     }
 
     protected long getShotTime() {

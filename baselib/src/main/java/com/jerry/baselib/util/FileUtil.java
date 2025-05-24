@@ -1,30 +1,17 @@
 package com.jerry.baselib.util;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.io.OutputStreamWriter;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.ContentValues;
+import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Base64;
-
-import com.jerry.baselib.App;
-import com.jerry.baselib.bean.MediaBean;
 
 /**
  * 文件处理类
@@ -33,229 +20,36 @@ import com.jerry.baselib.bean.MediaBean;
  */
 public class FileUtil {
 
-    public static final String PATH_APK = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/xianyu615.apk";
-
-    public static String getAppExternalPath() {
-        return App.getInstance().getExternalCacheDir().getAbsolutePath() + File.separator;
-    }
-
-    /**
-     * 判断是否有外部存储设备sdcard
-     *
-     * @return true | false
-     */
-    public static boolean isHaveSDCard() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
-    }
-
-    public static File getSaveFile() {
-        return new File(App.getInstance().getFilesDir(), "pic.jpg");
-    }
-
-    public static String getPath(Uri uri) {
-        if (null == uri) {
-            LogUtils.e("uri return null");
-            return null;
-        }
-
-        LogUtils.d(uri.toString());
-        String path = null;
-        final String scheme = uri.getScheme();
-        if (null == scheme) {
-            path = uri.getPath();
-        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            path = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            Cursor cursor = null;
-            try {
-                cursor = App.getInstance().getContentResolver().query(uri, proj, null, null, null);
-            } catch (Exception e) {
-                LogUtils.e(e.getLocalizedMessage());
+    public static void export(Context context, String fileName, String content) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
+        values.put(MediaStore.Downloads.MIME_TYPE, "text/plain");
+        values.put(MediaStore.Downloads.IS_PENDING, 1);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            ContentResolver resolver = context.getContentResolver();
+            Uri collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+            Uri fileUri = resolver.insert(collection, values);
+            if (fileUri == null) {
+                ToastUtil.showShortText("创建文件失败");
+                return;
             }
-            if (null != cursor) {
-                cursor.moveToFirst();
-                try {
-                    path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
-                } catch (Exception e) {
-                    LogUtils.e(e.getLocalizedMessage());
-                }
-            }
-            close(cursor);
-        }
-        return path;
-    }
+            try (OutputStream out = resolver.openOutputStream(fileUri); OutputStreamWriter osw = new OutputStreamWriter(
+                out); BufferedWriter writer = new BufferedWriter(osw)) {
+                writer.write(content);
+                writer.flush();
 
-    /**
-     * 拷贝
-     */
-    public static boolean copyFile(File srcFile, File destFile) {
-        if (srcFile == null || destFile == null) {
-            return false;
-        }
-        // 如果源文件和目标文件相同则返回 false
-        if (srcFile.equals(destFile)) {
-            return false;
-        }
-        // 源文件不存在或者不是文件则返回 false
-        if (!srcFile.exists() || !srcFile.isFile()) {
-            return false;
-        }
-        if (destFile.exists()) {// 目标文件存在
-            return true;
-        }
-        // 目标目录不存在返回 false
-        if (!createOrExistsDir(destFile.getParentFile())) {
-            return false;
-        }
-        try {
-            return writeFileFromIS(destFile, new FileInputStream(srcFile));
-        } catch (FileNotFoundException e) {
-            return false;
-        }
-    }
+                // 标记写入完成
+                values.clear();
+                values.put(MediaStore.Downloads.IS_PENDING, 0);
+                resolver.update(fileUri, values, null, null);
 
-    private static boolean writeFileFromIS(File file, InputStream is) {
-        if (!createOrExistsFile(file) || is == null) {
-            return false;
-        }
-        OutputStream os = null;
-        try {
-            os = new BufferedOutputStream(new FileOutputStream(file));
-            int sBufferSize = 8192;
-            byte[] data = new byte[sBufferSize];
-            int len;
-            while ((len = is.read(data, 0, sBufferSize)) != -1) {
-                os.write(data, 0, len);
-            }
-            return true;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            close(os, is);
-        }
-    }
-
-    /**
-     * 计算图片的缩放值
-     */
-    private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-        }
-        return inSampleSize;
-    }
-
-    /**
-     * 根据路径获得图片并压缩，返回bitmap用于显示
-     */
-    private static Bitmap getSmallBitmap(String filePath) {
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, 100, 100);
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-
-        return BitmapFactory.decodeFile(filePath, options);
-    }
-
-    /**
-     * 将图片转换成Base64编码的字符串
-     */
-    public static String bitmapToString(String filePath) {
-        Bitmap bm = getSmallBitmap(filePath);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 40, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    /**
-     * 获取本地所有的图片
-     *
-     * @return list
-     */
-    public static List<MediaBean> getAllLocalPhotos(int state) {
-        ContentResolver contentResolver = App.getInstance().getContentResolver();
-        List<MediaBean> result = new ArrayList<>();
-        Uri uri;
-        Cursor cursor;
-        if (state == 0 || state == 1) {
-            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            cursor = contentResolver.query(uri, null, null, null, MediaStore.Images.Media.DATE_MODIFIED + " DESC");
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    String path = cursor.getString(index); // 文件地址
-                    index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
-                    String modified = cursor.getString(index); // 修改日期
-                    File file = new File(path);
-                    if (file.exists()) {
-                        MediaBean mediaBean = new MediaBean();
-                        mediaBean.setType(0);
-                        mediaBean.setUrl(path);
-                        mediaBean.setModified(modified);
-                        result.add(mediaBean);
-                    }
-                }
+                ToastUtil.showShortText("导出成功: " + fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ToastUtil.showShortText("写入失败: " + e.getMessage());
             }
         }
-        if (state == 0 || state == 2) {
-            uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-            cursor = contentResolver.query(uri, null, null, null, MediaStore.Video.Media.DATE_MODIFIED + " DESC");
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    int index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                    String path = cursor.getString(index); // 文件地址
-                    index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED);
-                    String modified = cursor.getString(index); // 修改日期
-                    File file = new File(path);
-                    if (file.exists()) {
-                        MediaBean mediaBean = new MediaBean();
-                        mediaBean.setType(1);
-                        mediaBean.setUrl(path);
-                        mediaBean.setModified(modified);
-                        result.add(mediaBean);
-                    }
-                }
-            }
-        }
-        Collections.sort(result);
-        return result;
     }
-
-    public static boolean createOrExistsFile(final File file) {
-        if (file == null) {
-            return false;
-        }
-        // 如果存在，是文件则返回 true，是目录则返回 false
-        if (file.exists()) {
-            return file.isFile();
-        }
-        if (!createOrExistsDir(file.getParentFile())) {
-            return false;
-        }
-        try {
-            return file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean createOrExistsDir(File file) {
-        return file != null && (file.exists() ? file.isDirectory() : file.mkdirs());
-    }
-
     /**
      * 清空文件：参数为文件夹时，只清理其内部文件，不清理本身, 参数为文件时，删除
      */
