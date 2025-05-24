@@ -113,9 +113,9 @@ public class ZzSearchTask extends BaseTask {
                 }
                 break;
             case 5:
-                if (mService.hasText("钱包")) {
+                if (hasNode("payment_method_text")) {
                     // 添加成功了
-                    if (clickText("添加信用卡/借记卡")) {
+                    if (clickLast("cl_payment_method")) {
                         recordBean.handleStatus = 1;
                         MyDbManager.getInstance().insertOrReplaceObject(recordBean);
                         errorCount = 0;

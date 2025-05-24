@@ -53,8 +53,16 @@ public abstract class BaseTask {
         return mService.input(PACKAGE_NAME + id, text);
     }
 
+    protected boolean hasNode(String id) {
+        return mService.hasNode(PACKAGE_NAME + id);
+    }
+
     protected boolean click(String id) {
-        return mService.exeClickById(PACKAGE_NAME + id);
+        return mService.exeClickById(PACKAGE_NAME + id, 0);
+    }
+
+    protected boolean clickLast(String id) {
+        return mService.exeClickById4Last(PACKAGE_NAME + id);
     }
 
     protected boolean clickText(String text) {

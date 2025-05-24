@@ -193,6 +193,18 @@ public abstract class BaseListenerService extends AccessibilityService {
     /**
      * 判断是否为首页
      */
+    public boolean hasNode(String id) {
+        AccessibilityNodeInfo rootNode = getRootInActiveWindow();
+        if (rootNode == null) {
+            return false;
+        }
+        List<AccessibilityNodeInfo> indicators = rootNode.findAccessibilityNodeInfosByViewId(id);
+        return !CollectionUtils.isEmpty(indicators);
+    }
+
+    /**
+     * 判断是否为首页
+     */
     public boolean hasText(String text) {
         AccessibilityNodeInfo rootNode = getRootInActiveWindow();
         if (rootNode == null) {
@@ -285,12 +297,24 @@ public abstract class BaseListenerService extends AccessibilityService {
     }
 
     @SuppressLint("DefaultLocale")
-    public boolean exeClickById(String id) {
+    public boolean exeClickById(String id, int index) {
+        AccessibilityNodeInfo newRootNode = getRootInActiveWindow();
+        if (newRootNode != null) {
+            List<AccessibilityNodeInfo> nodes = newRootNode.findAccessibilityNodeInfosByViewId(id);
+            if (nodes != null && nodes.size() > index) {
+                return exeClick(nodes.get(index));
+            }
+        }
+        return false;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public boolean exeClickById4Last(String id) {
         AccessibilityNodeInfo newRootNode = getRootInActiveWindow();
         if (newRootNode != null) {
             List<AccessibilityNodeInfo> nodes = newRootNode.findAccessibilityNodeInfosByViewId(id);
             if (!CollectionUtils.isEmpty(nodes)) {
-                return exeClick(nodes.get(0));
+                return exeClick(nodes.get(nodes.size()-1));
             }
         }
         return false;
