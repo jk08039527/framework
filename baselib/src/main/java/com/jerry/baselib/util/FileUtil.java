@@ -13,6 +13,8 @@ import android.content.Context;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.jerry.baselib.R;
+
 /**
  * 文件处理类
  *
@@ -30,7 +32,7 @@ public class FileUtil {
             Uri collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
             Uri fileUri = resolver.insert(collection, values);
             if (fileUri == null) {
-                ToastUtil.showShortText("创建文件失败");
+                ToastUtil.showShortText(R.string.file_create_fail);
                 return;
             }
             try (OutputStream out = resolver.openOutputStream(fileUri); OutputStreamWriter osw = new OutputStreamWriter(
@@ -43,10 +45,10 @@ public class FileUtil {
                 values.put(MediaStore.Downloads.IS_PENDING, 0);
                 resolver.update(fileUri, values, null, null);
 
-                ToastUtil.showShortText("导出成功: " + fileName);
+                ToastUtil.showShortText(context.getString(R.string.file_export_success, fileName));
             } catch (IOException e) {
                 e.printStackTrace();
-                ToastUtil.showShortText("写入失败: " + e.getMessage());
+                ToastUtil.showShortText(context.getString(R.string.file_export_fail, fileName));
             }
         }
     }

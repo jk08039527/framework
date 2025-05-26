@@ -11,6 +11,7 @@ import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.ToastUtil;
 import com.jerry.baselib.util.WeakHandler;
+import com.jerry.myframwork.bean.ActionConfigBean;
 import com.jerry.myframwork.bean.RecordBean;
 import com.jerry.myframwork.dbhelper.MyDbManager;
 
@@ -115,16 +116,15 @@ public class ZzSearchTask extends BaseTask {
             case 5:
                 if (hasNode("payment_method_text")) {
                     // 添加成功了
-                    if (clickLast("cl_payment_method")) {
-                        recordBean.handleStatus = 1;
-                        MyDbManager.getInstance().insertOrReplaceObject(recordBean);
-                        errorCount = 0;
-                        taskState = 0;
-                        endCallback.onEnd(true);
-                        return;
+                    recordBean.handleStatus = 1;
+                    MyDbManager.getInstance().insertOrReplaceObject(recordBean);
+                    // 点卡号
+                    if (clickText(recordBean.cardNum.substring(recordBean.cardNum.length() - 4))) {
+                        taskState++;
                     } else {
                         errorCount++;
                     }
+                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getShotTime());
                 } else {
                     if (!CollectionUtils.isEmpty(mService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(PACKAGE_NAME + "tv_error"))) {
                         // 添加失败了
@@ -141,10 +141,31 @@ public class ZzSearchTask extends BaseTask {
                     } else {
                         errorCount++;
                     }
+                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getMiddleTime());
                 }
-                mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getMiddleTime());
                 break;
             case 6:
+                ActionConfigBean configBean;
+                List<ActionConfigBean> actionConfigBeans = ActionConfigHelper.getInstance().getActionConfigBeans();
+                if (CollectionUtils.isEmpty(actionConfigBeans)) {
+                    configBean = actionConfigBeans.get(0);
+                } else {
+                    configBean = ActionConfigHelper.defaultConfigBean;
+                }
+                // 点击删除
+                if (mService.exeClick(configBean.x, configBean.y)) {
+                    taskState++;
+                } else {
+                    errorCount++;
+                }
+                mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getShotTime());
+                break;
+            case 7:
+                if (clickLast("cl_payment_method")) {
+                    errorCount = 0;
+                    taskState = 0;
+                    endCallback.onEnd(true);
+                }
                 break;
         }
         if (errorCount > 3) {

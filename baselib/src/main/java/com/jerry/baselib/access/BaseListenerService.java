@@ -8,14 +8,18 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler.Callback;
 import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -45,6 +49,7 @@ import com.jerry.baselib.util.WeakHandler;
  */
 public abstract class BaseListenerService extends AccessibilityService {
 
+    private static final String TAG = "BaseListenerService";
     private static final String NOTIFICATION_CHANNEL_ID = BuildConfig.LIBRARY_PACKAGE_NAME + ".Foreground";
     private static final int NOTIFICATION_FOREGROUND_ID = 9527;
     protected static BaseListenerService instance;
@@ -90,8 +95,12 @@ public abstract class BaseListenerService extends AccessibilityService {
                 startForeground(NOTIFICATION_FOREGROUND_ID, builder.build());
             }
         }
-        mWidth = getResources().getDisplayMetrics().widthPixels;
-        mHeight = getResources().getDisplayMetrics().heightPixels;
+        Point sScreenRealSize = new Point();
+        WindowManager sWindowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        sWindowManager.getDefaultDisplay().getRealSize(sScreenRealSize);
+        mWidth = sScreenRealSize.x;
+        mHeight = sScreenRealSize.y;
+        Log.d(TAG, "onCreate: mWidth = " + mWidth + ",mHeight = " + mHeight);
         mGlobalActionAutomator = new GlobalActionAutomator(this);
         FloatWindowManager.getInstance().show();
     }
@@ -335,16 +344,7 @@ public abstract class BaseListenerService extends AccessibilityService {
         if (newRootNode != null) {
             List<AccessibilityNodeInfo> nodes = newRootNode.findAccessibilityNodeInfosByText(text);
             if (!CollectionUtils.isEmpty(nodes)) {
-                for (AccessibilityNodeInfo node : nodes) {
-                    CharSequence txt = node.getText();
-                    if (txt == null) {
-                        txt = Key.NIL;
-                    }
-                    String nodeText = txt.toString();
-                    if (text.equals(nodeText)) {
-                        return exeClick(node);
-                    }
-                }
+                return exeClick(nodes.get(0));
             }
         }
         return false;

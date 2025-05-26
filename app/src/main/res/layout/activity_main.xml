@@ -12,13 +12,13 @@
         android:id="@+id/btn_read"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="读取文件" />
+        android:text="@string/import_file" />
 
     <CheckBox
         android:id="@+id/cb_usable"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="只展示有效"
+        android:text="@string/only_show_available"
         android:visibility="gone" />
 
     <com.jerry.baselib.weidgt.ptrlib.widget.PtrRecyclerView
@@ -31,7 +31,7 @@
         android:id="@+id/btn_export"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="导出"
+        android:text="@string/export"
         android:visibility="gone" />
 
 </LinearLayout>

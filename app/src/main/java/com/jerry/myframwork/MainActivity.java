@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
-import com.jerry.baselib.Key;
 import com.jerry.baselib.asyctask.AppTask;
 import com.jerry.baselib.asyctask.BackgroundTask;
 import com.jerry.baselib.asyctask.WhenTaskDone;
@@ -31,7 +29,6 @@ import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.FileUtil;
 import com.jerry.baselib.util.LogUtils;
-import com.jerry.baselib.util.PreferenceHelp;
 import com.jerry.baselib.util.StringUtil;
 import com.jerry.baselib.weidgt.NoticeDialog;
 import com.jerry.myframwork.bean.ConfigBean;
@@ -40,7 +37,6 @@ import com.jerry.myframwork.bean.RecordBean;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.QueryListener;
 
 public class MainActivity extends BaseRecyclerActivity<RecordBean> {
 
@@ -60,6 +56,10 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
         super.initView();
         setTitle(R.string.home);
         setRight(R.string.history);
+        findViewById(R.id.tv_title).setOnLongClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, ConfigActivity.class));
+            return true;
+        });
         mPtrRecyclerView.canRefresh = false;
         findViewById(R.id.btn_read).setOnClickListener(this);
         tvExport = findViewById(R.id.btn_export);
@@ -158,12 +158,12 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
                     }
                 }
                 if (recordBeanS.isEmpty() && recordBeanF.isEmpty()) {
-                    toast("暂无可以导出的记录");
+                    toast(R.string.no_records_available_for_export);
                     return;
                 }
                 NoticeDialog dialog = new NoticeDialog(this);
-                dialog.setTitleText("确认导出已完成的记录吗？");
-                dialog.setMessage("通过：" + recordBeanS.size() + "\n不通过：" + recordBeanF.size());
+                dialog.setTitleText(getString(R.string.sure_to_export_recorders));
+                dialog.setMessage(getString(R.string.export_recorders_pass_and_fail, recordBeanS.size(), recordBeanF.size()));
                 dialog.setPositiveListener(v1 -> {
                     dialog.dismiss();
                     export(recordBeanS, recordBeanF);
@@ -223,6 +223,7 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
         if (requestCode == CODE_READ) {
             loadingDialog(getString(R.string.loading));
             mData.clear();
+            mAllData.clear();
             AppTask.with(this).assign((BackgroundTask<List<RecordBean>>) () -> {
                 try {
                     List<RecordBean> recordBeans = new ArrayList<>();

@@ -6,7 +6,6 @@ import java.util.List;
 import com.jerry.baselib.asyctask.AppTask;
 import com.jerry.baselib.asyctask.BackgroundTask;
 import com.jerry.baselib.asyctask.WhenTaskDone;
-import com.jerry.baselib.asyctask.WhenTaskEnd;
 import com.jerry.baselib.impl.EndCallback;
 import com.jerry.myframwork.bean.RecordBean;
 import com.jerry.myframwork.dbhelper.MyDbManager;

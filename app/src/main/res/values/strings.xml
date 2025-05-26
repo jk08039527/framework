@@ -1,6 +1,15 @@
 <resources>
     <string name="app_name">VeoAs</string>
-    <string name="accessibility_service_description">运行辅助</string>
-    <string name="history">历史</string>
-    <string name="clear">清除</string>
+    <string name="accessibility_service_description">Run Assistant</string>
+    <string name="history">history</string>
+    <string name="clear">clear</string>
+    <string name="config">Config</string>
+    <string name="import_file">Import File</string>
+    <string name="only_show_available">Show Only Valid</string>
+    <string name="export">Export</string>
+    <string name="sure_to_export_recorders">Are you sure you want to export the completed records?</string>
+    <string name="export_recorders_pass_and_fail">Passed: %d\nFailed: %d</string>
+    <string name="no_records_available_for_export">No records available for export</string>
+    <string name="axisxy">X-axis = %d,Y-axis = %d</string>
+
 </resources>

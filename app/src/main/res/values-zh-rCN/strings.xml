@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">VeoAs</string>
+    <string name="accessibility_service_description">运行辅助</string>
+    <string name="history">历史</string>
+    <string name="clear">清除</string>
+    <string name="config">配置</string>
+    <string name="import_file">导入文件</string>
+    <string name="only_show_available">只展示有效</string>
+    <string name="export">导出文件</string>
+    <string name="sure_to_export_recorders">确认导出已完成的记录吗？</string>
+    <string name="export_recorders_pass_and_fail">"通过：%d\n不通过：%d"</string>
+    <string name="no_records_available_for_export">暂无可以导出的记录</string>
+    <string name="axisxy">X坐标 = %d,Y坐标 = %d</string>
+
+</resources>

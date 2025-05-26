@@ -22,6 +22,7 @@ public class ListenerService extends BaseListenerService {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        ActionConfigHelper.getInstance().init(null);
         currentTask = new ZzSearchTask(ListenerService.this, mWeakHandler);
     }
 
