@@ -56,5 +56,7 @@
     <string name="file_create_fail">Failed to create file</string>
     <string name="file_export_success">File exported successfully: %1$s</string>
     <string name="file_export_fail">File export failed: %1$s</string>
+    <string name="external_storage_not_available">External storage not available</string>
+    <string name="storage_permission_denied_unable_to_export_file">Storage permission denied, unable to export file</string>
 
 </resources>

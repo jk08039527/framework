@@ -8,15 +8,22 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.Manifest.permission;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.SystemClock;
+import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.jerry.baselib.asyctask.AppTask;
@@ -27,6 +34,7 @@ import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.RecyclerViewHolder;
 import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.util.CollectionUtils;
+import com.jerry.baselib.util.DateUtils;
 import com.jerry.baselib.util.FileUtil;
 import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.StringUtil;
@@ -43,6 +51,7 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
     private final List<RecordBean> mAllData = new ArrayList<>();
     private static final int CODE_READ = 1001;
     private static final int CODE_CAN_DRAW_OVERLAYS = 1002;
+    private static final int CODE_WRITE_EXTERNAL_STORAGE = 1003;
     private CheckBox mCbUsable;
     private TextView tvExport;
 
@@ -57,7 +66,7 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
         setTitle(R.string.home);
         setRight(R.string.history);
         findViewById(R.id.tv_title).setOnLongClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, ConfigActivity.class));
+            startActivity(new Intent(MainActivity.this, SettingActivity.class));
             return true;
         });
         mPtrRecyclerView.canRefresh = false;
@@ -69,7 +78,7 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
             mData.clear();
             if (isChecked) {
                 for (RecordBean allDatum : mAllData) {
-                    if (allDatum.handleStatus == 1) {
+                    if (allDatum.handleStatus != 0) {
                         mData.add(allDatum);
                     }
                 }
@@ -87,6 +96,13 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
                 }
             }
         });
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            if (ContextCompat.checkSelfPermission(this, permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{permission.WRITE_EXTERNAL_STORAGE}, CODE_WRITE_EXTERNAL_STORAGE);
+            }
+        }
 
         if (!Settings.canDrawOverlays(this)) {
             Intent intent1 = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -138,7 +154,11 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
     public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.btn_read:
+                Uri initialUri = DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "primary:Documents");
+                // 2. 使用 ACTION_OPEN_DOCUMENT_TREE
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
                 intent.setType("*/*");
                 startActivityForResult(intent, CODE_READ);
                 break;
@@ -157,18 +177,7 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
                             break;
                     }
                 }
-                if (recordBeanS.isEmpty() && recordBeanF.isEmpty()) {
-                    toast(R.string.no_records_available_for_export);
-                    return;
-                }
-                NoticeDialog dialog = new NoticeDialog(this);
-                dialog.setTitleText(getString(R.string.sure_to_export_recorders));
-                dialog.setMessage(getString(R.string.export_recorders_pass_and_fail, recordBeanS.size(), recordBeanF.size()));
-                dialog.setPositiveListener(v1 -> {
-                    dialog.dismiss();
-                    export(recordBeanS, recordBeanF);
-                });
-                dialog.show();
+                export(recordBeanS, recordBeanF);
                 break;
             case R.id.tv_right:
                 startActivity(new Intent(this, HistoryActivity.class));
@@ -180,22 +189,37 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
 
     private void export(List<RecordBean> recordBeanS, List<RecordBean> recordBeanF) {
         loadingDialog();
-        long time = SystemClock.elapsedRealtime();
+        String time = DateUtils.getDateTimeByLong(System.currentTimeMillis());
         String fileNameSuccess = "output_" + time + "_success.txt";
         String fileNameFail = "output_" + time + "_fail.txt";
         if (!recordBeanS.isEmpty()) {
             exportRecorders(fileNameSuccess, recordBeanS, result -> {
                 if (!recordBeanF.isEmpty()) {
-                    exportRecorders(fileNameFail, recordBeanF, result1 -> closeLoadingDialog());
+                    exportRecorders(fileNameFail, recordBeanF, result1 -> onExportEnd(recordBeanS.size(), recordBeanF.size()));
                 } else {
-                    closeLoadingDialog();
+                    onExportEnd(recordBeanS.size(), recordBeanF.size());
                 }
             });
         } else if (!recordBeanF.isEmpty()) {
-            exportRecorders(fileNameFail, recordBeanF, result -> closeLoadingDialog());
+            exportRecorders(fileNameFail, recordBeanF, result -> onExportEnd(recordBeanS.size(), recordBeanF.size()));
         } else {
-            closeLoadingDialog();
+            onExportEnd(0, 0);
         }
+    }
+
+    private void onExportEnd(final int successSize, final int failSize) {
+        closeLoadingDialog();
+        if (successSize == 0 && failSize == 0) {
+            toast(R.string.no_records_available_for_export);
+            return;
+        }
+        NoticeDialog dialog = new NoticeDialog(this);
+        dialog.setTitleText(getString(R.string.export_recorders_completed));
+        dialog.setMessage(getString(R.string.export_recorders_pass_and_fail, successSize, failSize)
+            + "\n"
+            + getString(R.string.export_path, "sdcard/Documents/veoas/"));
+        dialog.setSingleListener(R.string.got_it, v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void exportRecorders(String fileName, List<RecordBean> recordBeans, EndCallback callback) {
@@ -277,6 +301,20 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
                 onAfterRefresh();
                 ListenerService.getInstance().setRecordData(mAllData);
             }).whenTaskEnd(this::closeLoadingDialog).execute();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CODE_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 用户同意权限
+                LogUtils.d("PERMISSION_GRANTED");
+            } else {
+                // 用户拒绝权限
+                toast("存储权限被拒绝，无法导出文件");
+            }
         }
     }
 

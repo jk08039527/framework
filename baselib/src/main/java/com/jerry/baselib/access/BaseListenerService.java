@@ -32,9 +32,7 @@ import com.jerry.baselib.Key;
 import com.jerry.baselib.R;
 import com.jerry.baselib.flow.FloatWindowManager;
 import com.jerry.baselib.impl.EndCallback;
-import com.jerry.baselib.impl.OnDataCallback;
 import com.jerry.baselib.util.ActionCode;
-import com.jerry.baselib.util.AppUtils;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.MathUtil;
@@ -53,14 +51,13 @@ public abstract class BaseListenerService extends AccessibilityService {
     private static final String NOTIFICATION_CHANNEL_ID = BuildConfig.LIBRARY_PACKAGE_NAME + ".Foreground";
     private static final int NOTIFICATION_FOREGROUND_ID = 9527;
     protected static BaseListenerService instance;
-    private final List<OnAccessibilityEventListener> mOnAccessibilityEventListeners = new ArrayList<>();
     protected GlobalActionAutomator mGlobalActionAutomator;
     public boolean isPlaying;
     protected int errorCount;
     protected BaseTask currentTask;
     public static int mWidth;
     public static int mHeight;
-    protected final List<OnDataCallback<?>> mOnDataCallbacks = new ArrayList<>();
+    private OnPageChangedListener mPageChangedListener;
 
     public static BaseListenerService getInstance() {
         return instance;
@@ -105,6 +102,12 @@ public abstract class BaseListenerService extends AccessibilityService {
         FloatWindowManager.getInstance().show();
     }
 
+    @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+        LogUtils.d("onServiceConnected");
+    }
+
     /**
      * 开启任务
      */
@@ -114,7 +117,7 @@ public abstract class BaseListenerService extends AccessibilityService {
             mWeakHandler.sendEmptyMessage(start);
             return true;
         }
-        if (nodeInfo == null){
+        if (nodeInfo == null) {
             ToastUtil.showShortText("需要开启辅助");
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -186,17 +189,11 @@ public abstract class BaseListenerService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(final AccessibilityEvent accessibilityEvent) {
-        for (OnAccessibilityEventListener onAccessibilityEventListener : mOnAccessibilityEventListeners) {
-            onAccessibilityEventListener.onAccessibilityEvent(accessibilityEvent);
+        if (mPageChangedListener != null) {
+            if (mPageChangedListener.onPageChanged(accessibilityEvent)) {
+                mPageChangedListener = null;
+            }
         }
-    }
-
-    public void addOnAccessibilityEventListener(OnAccessibilityEventListener accessibilityEventListener) {
-        mOnAccessibilityEventListeners.add(accessibilityEventListener);
-    }
-
-    public void removeOnAccessibilityEventListener(OnAccessibilityEventListener accessibilityEventListener) {
-        mOnAccessibilityEventListeners.remove(accessibilityEventListener);
     }
 
     /**
@@ -323,7 +320,7 @@ public abstract class BaseListenerService extends AccessibilityService {
         if (newRootNode != null) {
             List<AccessibilityNodeInfo> nodes = newRootNode.findAccessibilityNodeInfosByViewId(id);
             if (!CollectionUtils.isEmpty(nodes)) {
-                return exeClick(nodes.get(nodes.size()-1));
+                return exeClick(nodes.get(nodes.size() - 1));
             }
         }
         return false;
@@ -410,20 +407,15 @@ public abstract class BaseListenerService extends AccessibilityService {
         return true;
     }
 
-    public boolean registerDataCallBack(final OnDataCallback<?> onDataCallback) {
-        if (mOnDataCallbacks.contains(onDataCallback)) {
-            LogUtils.w("onDataCallback already registered");
-            return false;
-        }
-        return mOnDataCallbacks.add(onDataCallback);
+    public void waitPageChange(final OnPageChangedListener onPageChangedListener) {
+        mPageChangedListener = onPageChangedListener;
     }
 
-    public boolean unregisterDataCallBack(final OnDataCallback<?> onDataCallback) {
-        return mOnDataCallbacks.remove(onDataCallback);
-    }
+    /**
+     * 执行符合页面变化的回调
+     */
+    public interface OnPageChangedListener {
 
-    public interface OnAccessibilityEventListener {
-
-        void onAccessibilityEvent(final AccessibilityEvent accessibilityEvent);
+        boolean onPageChanged(final AccessibilityEvent accessibilityEvent);
     }
 }

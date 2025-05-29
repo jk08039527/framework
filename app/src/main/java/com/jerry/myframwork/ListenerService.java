@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jerry.baselib.access.BaseListenerService;
-import com.jerry.baselib.asyctask.AppTask;
-import com.jerry.baselib.asyctask.BackgroundTask;
-import com.jerry.baselib.asyctask.WhenTaskDone;
 import com.jerry.myframwork.bean.RecordBean;
-import com.jerry.myframwork.dbhelper.MyDbManager;
 
 public class ListenerService extends BaseListenerService {
 

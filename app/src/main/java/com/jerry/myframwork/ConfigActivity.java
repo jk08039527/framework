@@ -2,25 +2,19 @@ package com.jerry.myframwork;
 
 import java.util.List;
 
-import android.content.Context;
-import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.jerry.baselib.access.BaseListenerService;
 import com.jerry.baselib.asyctask.AppTask;
 import com.jerry.baselib.asyctask.BackgroundTask;
 import com.jerry.baselib.asyctask.WhenTaskDone;
-import com.jerry.baselib.asyctask.WhenTaskEnd;
 import com.jerry.baselib.base.BaseRecyclerActivity;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.RecyclerViewHolder;
 import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.WeakHandler;
-import com.jerry.baselib.weidgt.MyEditText;
 import com.jerry.myframwork.bean.ActionConfigBean;
 import com.jerry.myframwork.dbhelper.MyDbManager;
 

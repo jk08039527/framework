@@ -7,9 +7,13 @@
     <string name="import_file">Import File</string>
     <string name="only_show_available">Show Only Valid</string>
     <string name="export">Export</string>
-    <string name="sure_to_export_recorders">Are you sure you want to export the completed records?</string>
+    <string name="export_recorders_completed">Record export completed</string>
     <string name="export_recorders_pass_and_fail">Passed: %d\nFailed: %d</string>
     <string name="no_records_available_for_export">No records available for export</string>
     <string name="axisxy">X-axis = %d,Y-axis = %d</string>
+    <string name="look">View</string>
+    <string name="got_it">Got it</string>
+    <string name="export_path">Export path: %1$s</string>
+    <string name="log_open">Logging Enabled</string>
 
 </resources>

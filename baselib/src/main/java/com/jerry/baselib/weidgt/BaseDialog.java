@@ -102,8 +102,9 @@ public abstract class BaseDialog extends Dialog {
     /**
      * 只有一个按钮
      */
-    public void setSingleListener(View.OnClickListener listener) {
+    public void setSingleListener(@StringRes int id, View.OnClickListener listener) {
         single = true;
+        positiveId = id;
         this.mPositiveButtonListener = listener;
     }
 

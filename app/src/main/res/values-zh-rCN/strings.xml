@@ -7,9 +7,13 @@
     <string name="import_file">导入文件</string>
     <string name="only_show_available">只展示有效</string>
     <string name="export">导出文件</string>
-    <string name="sure_to_export_recorders">确认导出已完成的记录吗？</string>
+    <string name="export_recorders_completed">记录导出已完成</string>
     <string name="export_recorders_pass_and_fail">"通过：%d\n不通过：%d"</string>
     <string name="no_records_available_for_export">暂无可以导出的记录</string>
     <string name="axisxy">X坐标 = %d,Y坐标 = %d</string>
+    <string name="look">查看</string>
+    <string name="got_it">我知道了</string>
+    <string name="export_path">导出路径：%1$s</string>
+    <string name="log_open">日志开启</string>
 
 </resources>

@@ -30,6 +30,10 @@
             android:exported="true"
             android:name=".ConfigActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:exported="true"
+            android:name=".SettingActivity"
+            android:theme="@style/AppTheme" />
 
         <service
             android:enabled="true"
@@ -46,6 +50,19 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_info"/>
         </service>
+
+        <provider
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:name="androidx.core.content.FileProvider">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+        <provider
+            android:authorities="${applicationId}.BmobContentProvider"
+            android:name="cn.bmob.v3.util.BmobContentProvider"></provider>
     </application>
 
 </manifest>

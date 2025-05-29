@@ -3,15 +3,17 @@ package com.jerry.myframwork;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.view.accessibility.AccessibilityEvent;
+
 import com.jerry.baselib.access.BaseListenerService;
+import com.jerry.baselib.access.BaseListenerService.OnPageChangedListener;
 import com.jerry.baselib.access.BaseTask;
 import com.jerry.baselib.impl.EndCallback;
+import com.jerry.baselib.impl.OnDataCallback;
 import com.jerry.baselib.util.AppUtils;
-import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.LogUtils;
 import com.jerry.baselib.util.ToastUtil;
 import com.jerry.baselib.util.WeakHandler;
-import com.jerry.myframwork.bean.ActionConfigBean;
 import com.jerry.myframwork.bean.RecordBean;
 import com.jerry.myframwork.dbhelper.MyDbManager;
 
@@ -53,7 +55,7 @@ public class ZzSearchTask extends BaseTask {
             }
             handleRecorder(recordBean, result -> {
                 if (mService.isPlaying) {
-                    mService.mWeakHandler.postDelayed(() -> handleRecorders(endCallback), getShotTime());
+                    mService.mWeakHandler.postDelayed(() -> handleRecorders(endCallback), getSShotTime());
                 }
             });
         }
@@ -63,48 +65,26 @@ public class ZzSearchTask extends BaseTask {
         if (!mService.isPlaying) {
             return;
         }
+        LogUtils.i("handleRecorder: taskState =" + taskState);
         switch (taskState) {
             case 0:
-                if (input("card_number_edit_text", recordBean.cardNum)) {
-                    taskState++;
-                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getSShotTime());
-                } else {
-                    errorCount++;
+                taskState++;
+                if (hasNode("fl_payment_methods")) {
+                    clickLast("cl_payment_method");
                 }
                 break;
             case 1:
-                if (input("expiry_date_edit_text", recordBean.cardDate)) {
+                if (input("card_number_edit_text", recordBean.cardNum)
+                    && input("expiry_date_edit_text", recordBean.cardDate)
+                    && input("cvc_edit_text", recordBean.cardCvc)
+                    && input("postal_code_edit_text", recordBean.cardAdd)) {
                     taskState++;
-                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getSShotTime());
                 } else {
                     errorCount++;
                 }
                 break;
             case 2:
-                if (input("cvc_edit_text", recordBean.cardCvc)) {
-                    taskState++;
-                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getSShotTime());
-                } else {
-                    errorCount++;
-                }
-                break;
-            case 3:
-                if (input("postal_code_edit_text", recordBean.cardAdd)) {
-                    taskState++;
-                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getSShotTime());
-                } else {
-                    errorCount++;
-                }
-                break;
-            case 4:
-                if (CollectionUtils.isEmpty(mService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(PACKAGE_NAME + "tv_error"))) {
-                    if (click("save_button")) {
-                        taskState++;
-                        mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getMiddleTime());
-                    } else {
-                        errorCount++;
-                    }
-                } else {
+                if (hasNode("tv_error")) {
                     recordBean.handleStatus = -1;
                     MyDbManager.getInstance().insertOrReplaceObject(recordBean);
                     errorCount = 0;
@@ -112,8 +92,23 @@ public class ZzSearchTask extends BaseTask {
                     endCallback.onEnd(true);
                     return;
                 }
+                if (click("save_button")) {
+                    mService.waitPageChange(accessibilityEvent -> {
+                        if (hasNode("payment_method_text") || hasNode("cl_container")) {
+                            LogUtils.w("waitPageChange = true");
+                            taskState++;
+                            mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getSShotTime());
+                            return true;
+                        }
+                        LogUtils.w("waitPageChange = false");
+                        return false;
+                    });
+                    return;
+                } else {
+                    errorCount++;
+                }
                 break;
-            case 5:
+            case 3:
                 if (hasNode("payment_method_text")) {
                     // 添加成功了
                     recordBean.handleStatus = 1;
@@ -124,13 +119,12 @@ public class ZzSearchTask extends BaseTask {
                     } else {
                         errorCount++;
                     }
-                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getShotTime());
                 } else {
-                    if (!CollectionUtils.isEmpty(mService.getRootInActiveWindow().findAccessibilityNodeInfosByViewId(PACKAGE_NAME + "tv_error"))) {
+                    if (hasNode("cl_container")) {
                         // 添加失败了
                         recordBean.handleStatus = -1;
                         MyDbManager.getInstance().insertOrReplaceObject(recordBean);
-                        if (mService.back()) {
+                        if (click("btn_left")) {
                             errorCount = 0;
                             taskState = 0;
                             endCallback.onEnd(true);
@@ -141,38 +135,29 @@ public class ZzSearchTask extends BaseTask {
                     } else {
                         errorCount++;
                     }
-                    mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getMiddleTime());
                 }
                 break;
-            case 6:
-                ActionConfigBean configBean;
-                List<ActionConfigBean> actionConfigBeans = ActionConfigHelper.getInstance().getActionConfigBeans();
-                if (CollectionUtils.isEmpty(actionConfigBeans)) {
-                    configBean = actionConfigBeans.get(0);
-                } else {
-                    configBean = ActionConfigHelper.defaultConfigBean;
-                }
+            case 4:
                 // 点击删除
-                if (mService.exeClick(configBean.x, configBean.y)) {
-                    taskState++;
-                } else {
-                    errorCount++;
-                }
-                mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getShotTime());
-                break;
-            case 7:
-                if (clickLast("cl_payment_method")) {
+                if (click("tv_delete")) {
                     errorCount = 0;
                     taskState = 0;
                     endCallback.onEnd(true);
+                    return;
+                } else {
+                    errorCount++;
                 }
                 break;
         }
-        if (errorCount > 3) {
-            errorCount = 0;
-            taskState = 0;
-            mService.mWeakHandler.postDelayed(() -> handleRecorders(endCallback), getShotTime());
+        if (errorCount > 0) {
+            LogUtils.w("errorCount = " + errorCount + ",taskState =" + taskState);
+            if (errorCount > 3) {
+                errorCount = 0;
+                taskState = 0;
+                endCallback.onEnd(false);
+            }
         }
+        mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getShotTime());
     }
 
     private RecordBean findNextHandleRecordBean() {

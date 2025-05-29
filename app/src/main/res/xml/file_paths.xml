@@ -1,0 +1,6 @@
+<paths>
+    <!-- 根路径，允许 FileProvider 访问所有外部存储内容 -->
+    <external-path
+        name="external_files"
+        path="." />
+</paths>
