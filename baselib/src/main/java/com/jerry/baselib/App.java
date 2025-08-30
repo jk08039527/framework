@@ -1,22 +1,18 @@
 package com.jerry.baselib;
 
-import android.annotation.SuppressLint;
-import android.app.Application;
+import android.content.Context;
 
-public abstract class App extends Application {
+public class App {
 
-    @SuppressLint("StaticFieldLeak")
-    private static App sContext;
+    private static Context sContext;
     private boolean isBackGround;
 
-    public static App getInstance() {
+    public static Context getInstance() {
         return sContext;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sContext = this;
+    public static void init(Context context) {
+        sContext = context;
     }
 
     public boolean isBackGround() {

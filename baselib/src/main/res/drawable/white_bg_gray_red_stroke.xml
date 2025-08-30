@@ -19,6 +19,13 @@
             <corners android:radius="@dimen/two_dp" />
         </shape>
     </item>
+    <item android:state_enabled="false">
+        <shape>
+            <solid android:color="@color/white" />
+            <stroke android:width="@dimen/half_dp" android:color="@color/hint_text_color" />
+            <corners android:radius="@dimen/two_dp" />
+        </shape>
+    </item>
     <item>
         <shape>
             <solid android:color="@color/white" />

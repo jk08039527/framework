@@ -26,10 +26,10 @@ import com.jerry.baselib.R;
  */
 public class FileUtil {
 
-    public static void export(Context context, String fileName, String content) {
+    public static void export(Context context, String dirName, String fileName, String content) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             ContentValues values = new ContentValues();
-            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/veoas");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/" + dirName);
             values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
             values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
             ContentResolver resolver = context.getContentResolver();
@@ -47,10 +47,12 @@ public class FileUtil {
                 // 标记写入完成
                 values.clear();
                 resolver.update(fileUri, values, null, null);
-                ToastUtil.showShortText(context.getString(R.string.file_export_success, "Documents/veoas/" + fileName));
+                ToastUtil.showShortText(context.getString(R.string.file_export_success,
+                    Environment.DIRECTORY_DOCUMENTS + File.separator + dirName + File.separator + fileName));
             } catch (IOException e) {
                 e.printStackTrace();
-                ToastUtil.showShortText(context.getString(R.string.file_export_fail, "Documents/veoas/" + fileName));
+                ToastUtil.showShortText(context.getString(R.string.file_export_fail,
+                    Environment.DIRECTORY_DOCUMENTS + File.separator + dirName + File.separator + fileName));
             }
         } else {
             if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
