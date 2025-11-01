@@ -13,11 +13,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.SystemClock;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +24,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.jerry.baselib.BuildConfig;
+import com.jerry.baselib.R;
 import com.jerry.baselib.asyctask.AppTask;
 import com.jerry.baselib.asyctask.BackgroundTask;
 import com.jerry.baselib.asyctask.WhenTaskDone;
@@ -152,38 +152,33 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
 
     @Override
     public void onClick(final View v) {
-        switch (v.getId()) {
-            case R.id.btn_read:
-                Uri initialUri = DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "primary:Documents");
-                // 2. 使用 ACTION_OPEN_DOCUMENT_TREE
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
-                intent.setType("*/*");
-                startActivityForResult(intent, CODE_READ);
-                break;
-            case R.id.btn_export:
-                List<RecordBean> recordBeanS = new ArrayList<>();
-                List<RecordBean> recordBeanF = new ArrayList<>();
-                for (RecordBean allDatum : mAllData) {
-                    switch (allDatum.handleStatus) {
-                        case 1:
-                            recordBeanS.add(allDatum);
-                            break;
-                        case -1:
-                            recordBeanF.add(allDatum);
-                            break;
-                        default:
-                            break;
-                    }
+        int id = v.getId();
+        if (id == R.id.btn_read) {
+            Uri initialUri = DocumentsContract.buildTreeDocumentUri("com.android.externalstorage.documents", "primary:Documents");
+            // 2. 使用 ACTION_OPEN_DOCUMENT_TREE
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
+            intent.setType("*/*");
+            startActivityForResult(intent, CODE_READ);
+        } else if (id == R.id.btn_export) {
+            List<RecordBean> recordBeanS = new ArrayList<>();
+            List<RecordBean> recordBeanF = new ArrayList<>();
+            for (RecordBean allDatum : mAllData) {
+                switch (allDatum.handleStatus) {
+                    case 1:
+                        recordBeanS.add(allDatum);
+                        break;
+                    case -1:
+                        recordBeanF.add(allDatum);
+                        break;
+                    default:
+                        break;
                 }
-                export(recordBeanS, recordBeanF);
-                break;
-            case R.id.tv_right:
-                startActivity(new Intent(this, HistoryActivity.class));
-                break;
-            default:
-                break;
+            }
+            export(recordBeanS, recordBeanF);
+        } else if (id == R.id.tv_right) {
+            startActivity(new Intent(this, HistoryActivity.class));
         }
     }
 
@@ -229,7 +224,7 @@ public class MainActivity extends BaseRecyclerActivity<RecordBean> {
                 for (RecordBean bean : recordBeans) {
                     sb.append(MessageFormat.format("{0}|{1}|{2}|{3}\n", bean.cardNum, bean.cardDate, bean.cardCvc, bean.cardAdd));
                 }
-                FileUtil.export(MainActivity.this, fileName, sb.toString().trim());
+                FileUtil.export(MainActivity.this,"veoas", fileName, sb.toString().trim());
                 return true;
             } catch (Exception e) {
                 LogUtils.e(e.getMessage());

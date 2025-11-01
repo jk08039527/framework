@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.access.BaseListenerService;
 import com.jerry.baselib.asyctask.AppTask;
 import com.jerry.baselib.asyctask.BackgroundTask;

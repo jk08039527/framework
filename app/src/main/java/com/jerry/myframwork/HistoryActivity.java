@@ -7,10 +7,10 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseRecyclerActivity;
 import com.jerry.baselib.base.BaseRecyclerAdapter;
 import com.jerry.baselib.base.RecyclerViewHolder;
-import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.weidgt.NoticeDialog;
 import com.jerry.myframwork.bean.RecordBean;
 import com.jerry.myframwork.dbhelper.MyDbManager;

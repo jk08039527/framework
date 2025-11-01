@@ -1,29 +1,11 @@
 package com.jerry.myframwork;
 
-import java.util.List;
-
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.TextView;
 
-import com.jerry.baselib.App;
-import com.jerry.baselib.access.BaseListenerService;
-import com.jerry.baselib.asyctask.AppTask;
-import com.jerry.baselib.asyctask.BackgroundTask;
-import com.jerry.baselib.asyctask.WhenTaskDone;
+import com.jerry.baselib.R;
 import com.jerry.baselib.base.BaseActivity;
-import com.jerry.baselib.base.BaseRecyclerActivity;
-import com.jerry.baselib.base.BaseRecyclerAdapter;
-import com.jerry.baselib.base.RecyclerViewHolder;
-import com.jerry.baselib.util.CollectionUtils;
 import com.jerry.baselib.util.FileLog;
-import com.jerry.baselib.util.PreferenceHelp;
-import com.jerry.baselib.util.WeakHandler;
-import com.jerry.myframwork.bean.ActionConfigBean;
-import com.jerry.myframwork.dbhelper.MyDbManager;
 
 /**
  * @author Jerry

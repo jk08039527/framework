@@ -157,7 +157,7 @@ public class ZzSearchTask extends BaseTask {
                 endCallback.onEnd(false);
             }
         }
-        mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getShotTime());
+        mService.mWeakHandler.postDelayed(() -> handleRecorder(recordBean, endCallback), getSShotTime());
     }
 
     private RecordBean findNextHandleRecordBean() {
