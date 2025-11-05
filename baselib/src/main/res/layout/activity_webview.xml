@@ -6,7 +6,14 @@
 
     <include layout="@layout/layout_header"/>
 
-    <WebView
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="test"
+        android:visibility="gone" />
+
+    <com.jerry.baselib.weidgt.MyWebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

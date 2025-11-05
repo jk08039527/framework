@@ -1,6 +1,8 @@
 package com.jerry.baselib.weidgt;
 
 import android.content.Context;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
@@ -11,7 +13,9 @@ import android.webkit.WebViewClient;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.jerry.baselib.impl.EndCallback;
 import com.jerry.baselib.util.LogUtils;
+import com.jerry.baselib.util.WeakHandler;
 
 /**
  * @author Jerry
@@ -20,8 +24,10 @@ import com.jerry.baselib.util.LogUtils;
  */
 public class MyWebView extends WebView {
 
-    private OnPageLoadFinishedCallback mOnPageLoadFinishedCallback;
-    private CanLoadUrlCallback mCanLoadUrlCallback;
+    protected final WeakHandler a = new WeakHandler(this::handleMyMessage);
+    protected String mUrl;
+    protected OnPageLoadFinishedCallback mOnPageLoadFinishedCallback;
+    protected CanLoadUrlCallback mCanLoadUrlCallback;
 
     public MyWebView(@NonNull final Context context) {
         this(context, null);
@@ -75,8 +81,12 @@ public class MyWebView extends WebView {
                 public void onProgressChanged(final WebView view, final int newProgress) {
                     super.onProgressChanged(view, newProgress);
                     if (newProgress == 100) {
-                        if (mOnPageLoadFinishedCallback != null) {
-                            mOnPageLoadFinishedCallback.onPageLoadFinished();
+                        String tmpUrl = getUrl();
+                        if (!TextUtils.equals(tmpUrl, mUrl)) {
+                            mUrl = tmpUrl;
+                            if (mOnPageLoadFinishedCallback != null) {
+                                mOnPageLoadFinishedCallback.onPageLoadFinished();
+                            }
                         }
                     }
                 }
@@ -86,12 +96,24 @@ public class MyWebView extends WebView {
         }
     }
 
+    public boolean postRequest(EndCallback endCallback) {
+        if (getProgress() < 100) {
+            a.postDelayed(() -> postRequest(endCallback), 100);
+            return false;
+        }
+        return true;
+    }
+
     public void setCanLoadUrlCallback(final CanLoadUrlCallback canLoadUrlCallback) {
         mCanLoadUrlCallback = canLoadUrlCallback;
     }
 
     public void setOnPageLoadFinishedCallback(final OnPageLoadFinishedCallback onPageLoadFinishedCallback) {
         mOnPageLoadFinishedCallback = onPageLoadFinishedCallback;
+    }
+
+    protected boolean handleMyMessage(Message msg){
+        return false;
     }
 
     public interface OnPageLoadFinishedCallback {

@@ -47,6 +47,9 @@ android {
         daoPackage 'com.jerry.myframwork.greendao'//自动生成的dao的包名，包名默认是entity所在的包；
         targetGenDir 'src/main/java'//生成数据库文件的目录
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
