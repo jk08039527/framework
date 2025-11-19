@@ -1,10 +1,8 @@
 package com.jerry.myframwork;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.jerry.baselib.access.BaseListenerService;
-import com.jerry.myframwork.bean.RecordBean;
 
 public class ListenerService extends BaseListenerService {
 
@@ -18,8 +16,6 @@ public class ListenerService extends BaseListenerService {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        ActionConfigHelper.getInstance().init(null);
-        currentTask = new ZzSearchTask(ListenerService.this, mWeakHandler);
     }
 
     @Override
@@ -30,9 +26,5 @@ public class ListenerService extends BaseListenerService {
     @Override
     public void handleHtml(final String url, final String html) {
 
-    }
-
-    public void setRecordData(final List<RecordBean> data) {
-        ((ZzSearchTask) currentTask).setRecordData(data);
     }
 }

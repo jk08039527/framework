@@ -13,20 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/import_file" />
-
-    <CheckBox
-        android:id="@+id/cb_usable"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/only_show_available"
-        android:visibility="gone" />
-
-    <com.jerry.baselib.weidgt.ptrlib.widget.PtrRecyclerView
-        android:id="@+id/ptrRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
     <Button
         android:id="@+id/btn_export"
         android:layout_width="match_parent"

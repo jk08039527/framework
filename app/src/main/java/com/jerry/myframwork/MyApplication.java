@@ -18,7 +18,6 @@ public class MyApplication extends App {
     public void onCreate() {
         super.onCreate();
         startService(new Intent(this, ListenerService.class));
-        HistoryDataHelper.getInstance().init(null);
         Bmob.initialize(this, BuildConfig.AVOS_APP_ID);
     }
 }

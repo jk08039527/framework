@@ -23,14 +23,6 @@
         </activity>
         <activity
             android:exported="true"
-            android:name="com.jerry.myframwork.HistoryActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:exported="true"
-            android:name="com.jerry.myframwork.ConfigActivity"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:exported="true"
             android:name="com.jerry.myframwork.SettingActivity"
             android:theme="@style/AppTheme" />
 
