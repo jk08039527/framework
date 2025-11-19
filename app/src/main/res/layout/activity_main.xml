@@ -8,16 +8,21 @@
 
     <View style="@style/horizontal_line_style" />
 
+    <com.jerry.myframwork.view.WaveView
+        android:id="@+id/waveView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="#111" />
+
     <Button
-        android:id="@+id/btn_read"
+        android:id="@+id/btn_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/import_file" />
+        android:text="@string/start_recorder" />
     <Button
-        android:id="@+id/btn_export"
+        android:id="@+id/btn_stop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/export"
-        android:visibility="gone" />
+        android:text="@string/stop_recorder" />
 
 </LinearLayout>
