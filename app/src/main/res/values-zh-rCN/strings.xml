@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VeoAs</string>
+    <string name="app_name">App</string>
     <string name="accessibility_service_description">运行辅助</string>
     <string name="history">历史</string>
     <string name="clear">清除</string>

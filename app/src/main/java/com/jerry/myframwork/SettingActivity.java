@@ -3,7 +3,7 @@ package com.jerry.myframwork;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.jerry.baselib.R;
+import com.jerry.app.R;
 import com.jerry.baselib.base.BaseActivity;
 import com.jerry.baselib.util.FileLog;
 

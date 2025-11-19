@@ -3,7 +3,7 @@ package com.jerry.myframwork;
 import android.content.Intent;
 
 import com.jerry.baselib.App;
-import com.jerry.baselib.BuildConfig;
+import com.jerry.app.BuildConfig;
 
 import cn.bmob.v3.Bmob;
 
